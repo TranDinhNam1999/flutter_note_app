@@ -43,6 +43,8 @@ dependencies:
   flutter_bloc: ^8.1.1
   http: ^0.13.5
   sizer: ^2.0.15
+  lottie: ^2.0.0
+  google_fonts: ^3.0.1
 
 dev_dependencies:
   flutter_test:

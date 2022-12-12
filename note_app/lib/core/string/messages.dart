@@ -1,6 +1,7 @@
 // ignore_for_file: constant_identifier_names
 
-const ADD_SUCCESS_MESSAGE = "Post Added Successfully";
+const INTRO_MESSAGE =
+    "Mindset, habits, and routines are the building blocks for success toward your wellness goals";
 
 const DELETE_SUCCESS_MESSAGE = "Post Delete Successfully";
 
