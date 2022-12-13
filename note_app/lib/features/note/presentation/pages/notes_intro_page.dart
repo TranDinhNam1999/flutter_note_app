@@ -5,6 +5,7 @@ import 'package:sizer/sizer.dart';
 
 import '../../../../core/string/lotties.dart';
 import '../../../../core/string/messages.dart';
+import 'notes_home_page.dart';
 
 class NotesIntro extends StatefulWidget {
   const NotesIntro({super.key});
@@ -63,7 +64,15 @@ class _NotesIntroState extends State<NotesIntro> {
                 child: SizedBox(
                   height: 60,
                   child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushReplacement<void, void>(
+                          context,
+                          MaterialPageRoute<void>(
+                            builder: (BuildContext context) =>
+                                const NoteHomePage(),
+                          ),
+                        );
+                      },
                       child: Text(
                         'GET STARTED',
                         style: GoogleFonts.nunito(

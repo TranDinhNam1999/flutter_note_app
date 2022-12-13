@@ -20,7 +20,6 @@ ThemeData lightTheme = ThemeData(
     ),
     inputDecorationTheme: InputDecorationTheme(
       floatingLabelStyle: const TextStyle(color: primaryColor),
-      iconColor: secondaryColor,
       focusedBorder: OutlineInputBorder(
         borderSide: const BorderSide(color: secondaryColor),
         borderRadius: BorderRadius.circular(12),
