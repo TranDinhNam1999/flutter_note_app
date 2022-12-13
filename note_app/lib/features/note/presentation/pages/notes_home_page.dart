@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:sizer/sizer.dart';
 
-import '../../widgets/notes_card_home.dart';
+import '../widgets/notes_home_page/notes_card_home.dart';
 
 class NoteHomePage extends StatefulWidget {
   const NoteHomePage({super.key});
@@ -19,15 +18,15 @@ class _NoteHomePageState extends State<NoteHomePage> {
         title: Text(
           'All Notes',
           style: GoogleFonts.nunito(
-              fontSize: 16, fontWeight: FontWeight.w800, color: Colors.black),
+              fontSize: 24, fontWeight: FontWeight.w800, color: Colors.black),
         ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: GridView(
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              mainAxisSpacing: 16, crossAxisCount: 3, crossAxisSpacing: 16),
-          children: [
+              mainAxisSpacing: 16, crossAxisCount: 2, crossAxisSpacing: 16),
+          children: const [
             NotesCardHome(),
           ],
         ),

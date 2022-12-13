@@ -1,8 +1,7 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:note_app/core/string/icons.dart';
-import 'package:sizer/sizer.dart';
-import 'package:auto_size_text/auto_size_text.dart';
 
 class NotesCardHome extends StatelessWidget {
   const NotesCardHome({super.key});
@@ -27,11 +26,11 @@ class NotesCardHome extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Flexible(
-                  flex: 7,
+                  flex: 9,
                   child: AutoSizeText('Học tiếng anh',
                       maxLines: 1,
                       style: GoogleFonts.nunito(
-                          fontSize: 18,
+                          fontSize: 16,
                           fontWeight: FontWeight.w700,
                           color: Colors.black)),
                 ),
@@ -44,29 +43,7 @@ class NotesCardHome extends StatelessWidget {
               ],
             ),
             Flexible(
-                child: AutoSizeText(
-                    'aaaaaaaaaaaaaaaaaaa aaaa aaa aaa aaaaaa aaa aaaaaaa sd df f',
-                    style: GoogleFonts.nunito(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.black))),
-            Flexible(
-                child: AutoSizeText(
-                    'aaaaaaaaaaaaaaaaaaa aaaa aaa aaa aaaaaa aaa aaaaaaa sd df f',
-                    style: GoogleFonts.nunito(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.black))),
-            Flexible(
-                child: AutoSizeText(
-                    'aaaaaaaaaaaaaaaaaaa aaaa aaa aaa aaaaaa aaa aaaaaaa sd df f',
-                    style: GoogleFonts.nunito(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.black))),
-            Flexible(
-                child: AutoSizeText(
-                    'aaaaaaaaaaaaaaaaaaa aaaa aaa aaa aaaaaa aaa aaaaaaa sd df f',
+                child: AutoSizeText('aaaaaaaaaaaaaaaaaaa',
                     style: GoogleFonts.nunito(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
