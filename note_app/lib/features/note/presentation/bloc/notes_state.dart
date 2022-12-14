@@ -1,29 +1,26 @@
 part of 'notes_bloc.dart';
 
-abstract class NotesState extends Equatable {
-  const NotesState();
-
-  @override
-  List<Object> get props => [];
+enum NoteStatus {
+  inital,
+  loading,
+  success,
+  failure,
+  deleteSuccess,
+  addSuccess,
+  updateSuccess
 }
 
-class NotesInitial extends NotesState {}
+class NotesState extends Equatable {
+  const NotesState({this.status = NoteStatus.inital, this.notes});
 
-class LoadingNoteState extends NotesState {}
-
-class LoadedNotesStare extends NotesState {
-  final List<Note> notes;
-
-  const LoadedNotesStare({required this.notes});
+  final List<Note>? notes;
+  final NoteStatus status;
 
   @override
-  List<Object> get props => [notes];
-}
+  List<Object> get props => [status];
 
-class ErrorNotesState extends NotesState {
-  final String message;
-
-  const ErrorNotesState({required this.message});
-  @override
-  List<Object> get props => [];
+  NotesState copyWith({NoteStatus? status, List<Note>? notes}) {
+    return NotesState(
+        status: status ?? this.status, notes: notes ?? this.notes);
+  }
 }

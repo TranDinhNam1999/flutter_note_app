@@ -5,6 +5,7 @@ import 'package:dartz/dartz.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/error/exceptions.dart';
 import '../model/note_model.dart';
+import 'package:uuid/uuid.dart';
 
 const CACHED_NOTES = "CACHED_NOTES";
 
@@ -52,17 +53,40 @@ class NoteLocalDateSourceImpl implements NoteLocalDateSource {
   }
 
   @override
-  Future<Unit> addNote(NoteModel postModel) async {
-    final localPosts = await getCachedNote();
+  Future<Unit> addNote(NoteModel noteModel) async {
+    var localNotes = await getCachedNote();
 
-    localPosts.add(postModel);
+    if (localNotes.isEmpty) {
+      List<NoteModel> list = [];
+      list.add(noteModel);
+      localNotes = list;
+    }
 
-    sharedPreferences.setString(CACHED_NOTES, json.encode(localPosts));
+    localNotes.add(noteModel);
+
+    sharedPreferences.setString(CACHED_NOTES, json.encode(localNotes));
     return Future.value(unit);
   }
 
   @override
-  Future<List<NoteModel>> getCachedNote() {
+  Future<List<NoteModel>> getCachedNote() async {
+    // var uuid = const Uuid();
+    // var v1 = uuid.v4().toString();
+    // var v2 = uuid.v4().toString();
+
+    // List<NoteModel> list = [
+    //   NoteModel(
+    //       body: "hehehe",
+    //       title: "nam đẹp trai",
+    //       uuid: v1,
+    //       isPin: 0,
+    //       indexColor: 3),
+    //   NoteModel(
+    //       body: "hahaha", title: 'nhật gà', uuid: v2, isPin: 1, indexColor: 2)
+    // ];
+
+    // cacheNote(list);
+
     final jsonString = sharedPreferences.getString(CACHED_NOTES);
 
     if (jsonString != null) {
@@ -73,6 +97,7 @@ class NoteLocalDateSourceImpl implements NoteLocalDateSource {
 
       return Future.value(jsonToPostModels);
     }
+    if (jsonString == null) return Future.value(null);
 
     return throw EmptyCacheException();
   }

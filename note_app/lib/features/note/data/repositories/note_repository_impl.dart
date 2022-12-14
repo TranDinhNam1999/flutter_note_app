@@ -21,8 +21,12 @@ class NotesRepositoryImpl implements NotesRepository {
 
   @override
   Future<Either<Failure, Unit>> addNote(Note note) async {
-    final NoteModel postModel =
-        NoteModel(uuid: note.uuid, title: note.title, body: note.body);
+    final NoteModel postModel = NoteModel(
+        uuid: note.uuid,
+        title: note.title,
+        body: note.body,
+        isPin: note.isPin,
+        indexColor: note.indexColor);
 
     return await _getMessage(() => localDateSource.addNote(postModel));
   }
@@ -34,8 +38,12 @@ class NotesRepositoryImpl implements NotesRepository {
 
   @override
   Future<Either<Failure, Unit>> updateNote(Note note) async {
-    final NoteModel postModel =
-        NoteModel(uuid: note.uuid, title: note.title, body: note.body);
+    final NoteModel postModel = NoteModel(
+        uuid: note.uuid,
+        title: note.title,
+        body: note.body,
+        isPin: note.isPin,
+        indexColor: note.indexColor);
 
     return await _getMessage(() => localDateSource.updateNote(postModel));
   }
