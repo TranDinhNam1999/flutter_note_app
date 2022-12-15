@@ -1,9 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:note_app/features/note/presentation/bloc/notes_bloc.dart';
 
 import '../widgets/notes_home_page/notes_card_home.dart';
+import 'notes_add_page.dart';
 
 class NoteHomePage extends StatefulWidget {
   const NoteHomePage({super.key});
@@ -24,9 +26,9 @@ class _NoteHomePageState extends State<NoteHomePage> {
 
   AppBar _buildAppbar() => AppBar(
         title: Text(
-          'All Notes',
-          style: GoogleFonts.nunito(
-              fontSize: 24, fontWeight: FontWeight.w800, color: Colors.black),
+          'Notes',
+          style: GoogleFonts.roboto(
+              fontSize: 22, fontWeight: FontWeight.w800, color: Colors.black),
         ),
       );
 
@@ -53,7 +55,49 @@ class _NoteHomePageState extends State<NoteHomePage> {
   }
 
   FloatingActionButton _buildFloatingActionButton() => FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          final act = CupertinoActionSheet(
+              title: const Text(
+                'New note',
+                style: TextStyle(
+                    color: Colors.black87,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700),
+              ),
+              actions: <Widget>[
+                CupertinoActionSheetAction(
+                  child: Text(
+                    'Text',
+                    style: GoogleFonts.roboto(color: Colors.blue),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const NoteAddPage()),
+                    );
+                  },
+                ),
+                CupertinoActionSheetAction(
+                  child: Text(
+                    'Checklist',
+                    style: GoogleFonts.roboto(color: Colors.blue),
+                  ),
+                  onPressed: () {},
+                )
+              ],
+              cancelButton: CupertinoActionSheetAction(
+                child: Text('Cancel',
+                    style: GoogleFonts.roboto(
+                        fontWeight: FontWeight.bold, color: Colors.red)),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ));
+          showCupertinoModalPopup(
+              context: context, builder: (BuildContext context) => act);
+        },
         backgroundColor: const Color.fromARGB(255, 217, 97, 76),
         child: const Icon(
           Icons.add,

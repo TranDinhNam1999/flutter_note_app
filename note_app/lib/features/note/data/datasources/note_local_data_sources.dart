@@ -70,22 +70,36 @@ class NoteLocalDateSourceImpl implements NoteLocalDateSource {
 
   @override
   Future<List<NoteModel>> getCachedNote() async {
-    // var uuid = const Uuid();
-    // var v1 = uuid.v4().toString();
-    // var v2 = uuid.v4().toString();
+    var uuid = const Uuid();
 
-    // List<NoteModel> list = [
-    //   NoteModel(
-    //       body: "hehehe",
-    //       title: "nam đẹp trai",
-    //       uuid: v1,
-    //       isPin: 0,
-    //       indexColor: 3),
-    //   NoteModel(
-    //       body: "hahaha", title: 'nhật gà', uuid: v2, isPin: 1, indexColor: 2)
-    // ];
+    List<NoteModel> list = [
+      NoteModel(
+          body: "hehehe",
+          title: "nam",
+          uuid: uuid.v4().toString(),
+          isPin: 0,
+          indexColor: 3),
+      NoteModel(
+          body: "hahaha hahah hahah hahah hahah hahah",
+          title: 'nhật gà',
+          uuid: uuid.v4(),
+          isPin: 1,
+          indexColor: 2),
+      NoteModel(
+          body: "hahaha",
+          title: 'nhật gà',
+          uuid: uuid.v4(),
+          isPin: 1,
+          indexColor: 5),
+      NoteModel(
+          body: "hahaha",
+          title: 'nhật gà',
+          uuid: uuid.v4(),
+          isPin: 1,
+          indexColor: 7)
+    ];
 
-    // cacheNote(list);
+    cacheNote(list);
 
     final jsonString = sharedPreferences.getString(CACHED_NOTES);
 

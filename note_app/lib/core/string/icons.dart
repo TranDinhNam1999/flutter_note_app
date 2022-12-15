@@ -9,3 +9,4 @@ const PAINT_ICON = 'assets/icon/paint.png';
 const PIN_ICON = 'assets/icon/pin.png';
 const TRASH_ICON = 'assets/icon/trash.png';
 const UNPIN_ICON = 'assets/icon/unpin.png';
+const KEYBOARD_ICON = 'assets/icon/keyboard.png';

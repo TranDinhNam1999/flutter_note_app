@@ -48,6 +48,7 @@ dependencies:
   auto_size_text: ^3.0.0
   dartz: ^0.10.1
   uuid: ^3.0.7
+  flutter_keyboard_visibility: ^5.0.0-nullsafety.3
 
 dev_dependencies:
   flutter_test:

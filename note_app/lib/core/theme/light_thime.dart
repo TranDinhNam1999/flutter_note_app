@@ -4,7 +4,7 @@ import 'app_color.dart';
 
 ThemeData lightTheme = ThemeData(
     appBarTheme: const AppBarTheme(
-        backgroundColor: primaryColor, centerTitle: true, elevation: 0),
+        backgroundColor: primaryAppbarColor, centerTitle: true),
     scaffoldBackgroundColor: primaryColor,
     brightness: Brightness.light,
     primaryColor: primaryColor,
