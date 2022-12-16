@@ -17,7 +17,7 @@ const List<Color> listColors = [
   Color.fromARGB(255, 248, 176, 164),
   Color.fromARGB(255, 151, 231, 217),
   Color.fromARGB(255, 214, 174, 232),
-  Color.fromARGB(255, 255, 255, 255),
+  Color.fromARGB(255, 238, 217, 217),
   Color.fromARGB(255, 249, 202, 211),
   Color.fromARGB(255, 243, 157, 185),
   Color.fromARGB(255, 192, 87, 142),
@@ -42,6 +42,7 @@ const List<Color> listColors = [
   Color.fromARGB(255, 150, 150, 150),
   Color.fromARGB(255, 100, 100, 100),
   Color.fromARGB(255, 50, 50, 50),
+  Color.fromARGB(255, 17, 17, 17)
 ];
 
 const primaryColorDark = Color(0xff51eec2);

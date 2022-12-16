@@ -1,9 +1,12 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:note_app/core/string/icons.dart';
+import 'package:note_app/features/note/presentation/widgets/common/common.dart';
 import 'package:sizer/sizer.dart';
 import '../../../../core/theme/app_color.dart';
 import '../widgets/notes_add_page/notes_icon.dart';
+import '../widgets/notes_add_page/notes_stick_dialog.dart';
 
 class NoteAddPage extends StatefulWidget {
   const NoteAddPage({super.key});
@@ -26,6 +29,25 @@ class _NoteAddPageState extends State<NoteAddPage> {
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _titleTextController = TextEditingController();
   final TextEditingController _bodyTextController = TextEditingController();
+  late FocusNode textBodyFocusNode;
+  late int isPin = 0;
+  late int indexColor = 0;
+  late String sizeFontText = "Small";
+  late TextStyleEnum textStyleNote = TextStyleEnum.small;
+
+  @override
+  void initState() {
+    super.initState();
+    textBodyFocusNode = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    // * Clean up the focus node when the Form is disposed.
+    textBodyFocusNode.dispose();
+
+    super.dispose();
+  }
 
   AppBar _buildAppbar(BuildContext context) => AppBar(
         leading: GestureDetector(
@@ -80,11 +102,11 @@ class _NoteAddPageState extends State<NoteAddPage> {
                     width: 92.w,
                     height: 60.h,
                     decoration: BoxDecoration(
-                      color: listColors[0],
+                      color: listColors[indexColor],
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.all(20),
+                      padding: const EdgeInsets.all(5),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -113,15 +135,120 @@ class _NoteAddPageState extends State<NoteAddPage> {
               ),
               NoteIcon(
                 nameIcon: PIN_ICON,
-                callback: () {},
+                callback: () {
+                  setState(() {
+                    if (isPin == 0) {
+                      isPin = 1;
+                    } else {
+                      isPin = 0;
+                    }
+                  });
+                },
               ),
               NoteIcon(
                 nameIcon: FONT_ICON,
-                callback: () {},
+                callback: () {
+                  showModalBottomSheet(
+                    context: context,
+                    builder: (
+                      context,
+                    ) =>
+                        CupertinoPopupSurface(
+                      child: SizedBox(
+                        height: 200,
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Flexible(
+                                    flex: 12,
+                                    child: Text('Text style',
+                                        style: GoogleFonts.montserrat(
+                                            fontSize: 24,
+                                            fontWeight: FontWeight.w400)),
+                                  ),
+                                  Flexible(
+                                    flex: 1,
+                                    child: Image.asset(
+                                      CHECK_ICON,
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                            const Divider(
+                              color: Color.fromARGB(255, 150, 150, 150),
+                              height: 2,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: StatefulBuilder(
+                                builder: (BuildContext context, setState) =>
+                                    Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    _buidAnimatedTextStyleBottomSheet(
+                                        TextStyleEnum.small, () {
+                                      setState(() =>
+                                          textStyleNote = TextStyleEnum.small);
+                                    }),
+                                    _buidAnimatedTextStyleBottomSheet(
+                                        TextStyleEnum.medium, () {
+                                      setState(() =>
+                                          textStyleNote = TextStyleEnum.medium);
+                                    }),
+                                    _buidAnimatedTextStyleBottomSheet(
+                                        TextStyleEnum.large, () {
+                                      setState(() =>
+                                          textStyleNote = TextStyleEnum.large);
+                                    }),
+                                    _buidAnimatedTextStyleBottomSheet(
+                                        TextStyleEnum.huge, () {
+                                      setState(() =>
+                                          textStyleNote = TextStyleEnum.huge);
+                                    }),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const Divider(
+                              color: Color.fromARGB(255, 150, 150, 150),
+                              height: 2,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
               ),
               NoteIcon(
                 nameIcon: PAINT_ICON,
-                callback: () {},
+                callback: () {
+                  showGeneralDialog(
+                      context: context,
+                      pageBuilder: (ctx, a1, a2) {
+                        return Container();
+                      },
+                      transitionBuilder: (ctx, a1, a2, child) {
+                        var curve = Curves.easeInOut.transform(a1.value);
+                        return Transform.scale(
+                          scale: curve,
+                          child:
+                              NoteStickDialog(indexColorValueSetter: ((value) {
+                            setState(() {
+                              indexColor = value;
+                            });
+                          })),
+                        );
+                      },
+                      transitionDuration: const Duration(milliseconds: 300));
+                },
               ),
             ],
           ),
@@ -129,7 +256,9 @@ class _NoteAddPageState extends State<NoteAddPage> {
             children: [
               NoteIcon(
                 nameIcon: KEYBOARD_ICON,
-                callback: () {},
+                callback: () {
+                  textBodyFocusNode.requestFocus();
+                },
               ),
             ],
           ),
@@ -142,26 +271,39 @@ class _NoteAddPageState extends State<NoteAddPage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Expanded(
+        Flexible(
+          flex: 8,
           child: TextField(
             controller: _titleTextController,
             style: GoogleFonts.roboto(
                 fontSize: 18, fontWeight: FontWeight.w700, color: Colors.black),
             decoration: InputDecoration(
+              hintText: 'Type title here...',
               focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(width: 0, color: listColors[0]),
+                borderSide: BorderSide(width: 0, color: listColors[indexColor]),
               ),
-              focusColor: listColors[0],
+              focusColor: listColors[indexColor],
               enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(
                   width: 0,
-                  color: listColors[0],
+                  color: listColors[indexColor],
                 ),
               ),
             ),
             keyboardType: TextInputType.text,
           ),
         ),
+        (isPin == 0)
+            ? const SizedBox(
+                width: 0,
+                height: 0,
+              )
+            : Flexible(
+                flex: 1,
+                child: Image.asset(
+                  PIN_ICON,
+                ),
+              )
       ],
     );
   }
@@ -171,25 +313,46 @@ class _NoteAddPageState extends State<NoteAddPage> {
       child: Padding(
         padding: const EdgeInsets.only(right: 5, left: 5, top: 10),
         child: TextField(
+          focusNode: textBodyFocusNode,
           style: GoogleFonts.roboto(
               color: Colors.black, fontWeight: FontWeight.bold),
           textAlign: TextAlign.center,
           controller: _bodyTextController,
           decoration: InputDecoration(
+            hintText: 'Type text here...',
             focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(width: 0, color: listColors[0]),
+              borderSide: BorderSide(width: 0, color: listColors[indexColor]),
             ),
-            focusColor: listColors[0],
+            focusColor: listColors[indexColor],
             enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(
                 width: 0,
-                color: listColors[0],
+                color: listColors[indexColor],
               ),
             ),
           ),
           keyboardType: TextInputType.multiline,
           maxLines: null,
           expands: true,
+        ),
+      ),
+    );
+  }
+
+  Widget _buidAnimatedTextStyleBottomSheet(
+      TextStyleEnum textStyle, Function() fnCheck) {
+    return AnimatedDefaultTextStyle(
+      curve: Curves.bounceInOut,
+      duration: const Duration(milliseconds: 300),
+      style: GoogleFonts.montserrat(
+          fontSize: 20,
+          fontWeight:
+              textStyleNote == textStyle ? FontWeight.w500 : FontWeight.w300,
+          color: textStyleNote == textStyle ? Colors.green : Colors.black),
+      child: GestureDetector(
+        onTap: fnCheck,
+        child: Text(
+          textStyle.toString(),
         ),
       ),
     );
