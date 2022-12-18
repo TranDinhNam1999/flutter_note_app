@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:note_app/core/string/icons.dart';
@@ -6,6 +5,7 @@ import 'package:note_app/features/note/presentation/widgets/common/common.dart';
 import 'package:sizer/sizer.dart';
 import '../../../../core/theme/app_color.dart';
 import '../widgets/notes_add_page/notes_icon.dart';
+import '../widgets/notes_add_page/notes_model_bottom_sheet_text_style.dart';
 import '../widgets/notes_add_page/notes_stick_dialog.dart';
 
 class NoteAddPage extends StatefulWidget {
@@ -149,105 +149,24 @@ class _NoteAddPageState extends State<NoteAddPage> {
                 nameIcon: FONT_ICON,
                 callback: () {
                   showModalBottomSheet(
-                    context: context,
-                    builder: (
-                      context,
-                    ) =>
-                        CupertinoPopupSurface(
-                      child: SizedBox(
-                        height: 200,
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(10),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Flexible(
-                                    flex: 12,
-                                    child: Text('Text style',
-                                        style: GoogleFonts.montserrat(
-                                            fontSize: 24,
-                                            fontWeight: FontWeight.w400)),
-                                  ),
-                                  Flexible(
-                                    flex: 1,
-                                    child: Image.asset(
-                                      CHECK_ICON,
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                            const Divider(
-                              color: Color.fromARGB(255, 150, 150, 150),
-                              height: 2,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(10),
-                              child: StatefulBuilder(
-                                builder: (BuildContext context, setState) =>
-                                    Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    _buidAnimatedTextStyleBottomSheet(
-                                        TextStyleEnum.small, () {
-                                      setState(() =>
-                                          textStyleNote = TextStyleEnum.small);
-                                    }),
-                                    _buidAnimatedTextStyleBottomSheet(
-                                        TextStyleEnum.medium, () {
-                                      setState(() =>
-                                          textStyleNote = TextStyleEnum.medium);
-                                    }),
-                                    _buidAnimatedTextStyleBottomSheet(
-                                        TextStyleEnum.large, () {
-                                      setState(() =>
-                                          textStyleNote = TextStyleEnum.large);
-                                    }),
-                                    _buidAnimatedTextStyleBottomSheet(
-                                        TextStyleEnum.huge, () {
-                                      setState(() =>
-                                          textStyleNote = TextStyleEnum.huge);
-                                    }),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            const Divider(
-                              color: Color.fromARGB(255, 150, 150, 150),
-                              height: 2,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
+                      context: context,
+                      builder: (
+                        context,
+                      ) =>
+                          NoteModelBottomSheetTextStyle(
+                            textStyleNote: textStyleNote,
+                            textStyleEnumValueSetter: (value) {
+                              setState(() {
+                                textStyleNote = value;
+                              });
+                            },
+                          ));
                 },
               ),
               NoteIcon(
                 nameIcon: PAINT_ICON,
                 callback: () {
-                  showGeneralDialog(
-                      context: context,
-                      pageBuilder: (ctx, a1, a2) {
-                        return Container();
-                      },
-                      transitionBuilder: (ctx, a1, a2, child) {
-                        var curve = Curves.easeInOut.transform(a1.value);
-                        return Transform.scale(
-                          scale: curve,
-                          child:
-                              NoteStickDialog(indexColorValueSetter: ((value) {
-                            setState(() {
-                              indexColor = value;
-                            });
-                          })),
-                        );
-                      },
-                      transitionDuration: const Duration(milliseconds: 300));
+                  _builDialogStick(context);
                 },
               ),
             ],
@@ -276,7 +195,7 @@ class _NoteAddPageState extends State<NoteAddPage> {
           child: TextField(
             controller: _titleTextController,
             style: GoogleFonts.roboto(
-                fontSize: 18, fontWeight: FontWeight.w700, color: Colors.black),
+                fontSize: 24, fontWeight: FontWeight.w700, color: Colors.black),
             decoration: InputDecoration(
               hintText: 'Type title here...',
               focusedBorder: OutlineInputBorder(
@@ -290,6 +209,7 @@ class _NoteAddPageState extends State<NoteAddPage> {
                 ),
               ),
             ),
+            maxLines: null,
             keyboardType: TextInputType.text,
           ),
         ),
@@ -315,7 +235,9 @@ class _NoteAddPageState extends State<NoteAddPage> {
         child: TextField(
           focusNode: textBodyFocusNode,
           style: GoogleFonts.roboto(
-              color: Colors.black, fontWeight: FontWeight.bold),
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+              fontSize: textStyleNote.sizetext),
           textAlign: TextAlign.center,
           controller: _bodyTextController,
           decoration: InputDecoration(
@@ -339,22 +261,23 @@ class _NoteAddPageState extends State<NoteAddPage> {
     );
   }
 
-  Widget _buidAnimatedTextStyleBottomSheet(
-      TextStyleEnum textStyle, Function() fnCheck) {
-    return AnimatedDefaultTextStyle(
-      curve: Curves.bounceInOut,
-      duration: const Duration(milliseconds: 300),
-      style: GoogleFonts.montserrat(
-          fontSize: 20,
-          fontWeight:
-              textStyleNote == textStyle ? FontWeight.w500 : FontWeight.w300,
-          color: textStyleNote == textStyle ? Colors.green : Colors.black),
-      child: GestureDetector(
-        onTap: fnCheck,
-        child: Text(
-          textStyle.toString(),
-        ),
-      ),
-    );
+  _builDialogStick(context) {
+    return showGeneralDialog(
+        context: context,
+        pageBuilder: (ctx, a1, a2) {
+          return Container();
+        },
+        transitionBuilder: (ctx, a1, a2, child) {
+          var curve = Curves.easeInOut.transform(a1.value);
+          return Transform.scale(
+            scale: curve,
+            child: NoteStickDialog(indexColorValueSetter: ((value) {
+              setState(() {
+                indexColor = value;
+              });
+            })),
+          );
+        },
+        transitionDuration: const Duration(milliseconds: 300));
   }
 }

@@ -36,9 +36,7 @@ class NotesCardHome extends StatelessWidget {
         ),
       ],
       child: GestureDetector(
-        onTap: (() {
-          print('tap tap tap');
-        }),
+        onTap: (() {}),
         child: Container(
           decoration: BoxDecoration(
             color: listColors[note.indexColor],

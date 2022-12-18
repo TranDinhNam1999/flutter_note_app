@@ -111,7 +111,7 @@ class NoteLocalDateSourceImpl implements NoteLocalDateSource {
 
       return Future.value(jsonToPostModels);
     }
-    if (jsonString == null) return Future.value(null);
+    if (jsonString == null) return Future.value([]);
 
     return throw EmptyCacheException();
   }
