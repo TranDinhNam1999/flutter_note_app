@@ -1,6 +1,7 @@
 // ignore_for_file: must_be_immutable
 import 'package:flutter/material.dart';
 import 'package:flex_color_picker/flex_color_picker.dart';
+import 'package:sizer/sizer.dart';
 
 class NoteColorPickerDialog extends StatelessWidget {
   NoteColorPickerDialog(
@@ -46,7 +47,7 @@ class NoteColorPickerDialog extends StatelessWidget {
                   context,
                   // We use the dialogSelectColor, as its starting color.
                   dialogSelectColor,
-                  title: Text('ColorPicker',
+                  title: Text('Color',
                       style: Theme.of(context).textTheme.titleLarge),
                   width: 40,
                   height: 40,
@@ -84,9 +85,9 @@ class NoteColorPickerDialog extends StatelessWidget {
                       ),
                     );
                   },
-                  transitionDuration: const Duration(milliseconds: 400),
-                  constraints: const BoxConstraints(
-                      minHeight: 400, minWidth: 320, maxWidth: 320),
+                  transitionDuration: const Duration(milliseconds: 500),
+                  constraints: BoxConstraints(
+                      minHeight: 400, minWidth: 80.w, maxWidth: 90.w),
                 );
                 textColorValueSetter(newColor);
                 setState(() => dialogSelectColor = newColor);

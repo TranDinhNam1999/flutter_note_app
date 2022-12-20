@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:note_app/core/string/icons.dart';
+import 'package:note_app/core/theme/app_font.dart';
 import 'package:note_app/features/note/presentation/widgets/common/common.dart';
 import 'package:sizer/sizer.dart';
+import 'package:uuid/uuid.dart';
 import '../../../../core/theme/app_color.dart';
 import '../../../../core/util/custom_text_field.dart';
+import '../../domain/entites/note.dart';
+import '../bloc/notes_bloc.dart';
 import '../widgets/notes_add_page/notes_icon.dart';
 import '../widgets/notes_add_page/notes_model_bottom_sheet_text_style.dart';
 import '../widgets/notes_add_page/notes_stick_dialog.dart';
@@ -37,6 +42,7 @@ class _NoteAddPageState extends State<NoteAddPage> {
   late TextStyleEnum textStyleNote = TextStyleEnum.small;
   late IconAlignEnum iconAlignNote = IconAlignEnum.center;
   late Color textColor = Colors.black;
+  late int indexFontText = 0;
 
   @override
   void initState() {
@@ -69,7 +75,16 @@ class _NoteAddPageState extends State<NoteAddPage> {
         actions: [
           GestureDetector(
               onTap: (() {
-                Navigator.pop(context);
+                var uuid = const Uuid();
+                Note note = Note(
+                    uuid: uuid.v4(),
+                    title: _titleTextController.text,
+                    body: _bodyTextController.text,
+                    isPin: isPin,
+                    indexColor: indexColor,
+                    indexFont: indexFontText,
+                    colorText: textColor.toString());
+                context.read<NotesBloc>().add(AddNoteEvent(note: note));
               }),
               child: Padding(
                 padding: const EdgeInsets.only(right: 10),
@@ -178,6 +193,12 @@ class _NoteAddPageState extends State<NoteAddPage> {
                                 textColor = value;
                               });
                             },
+                            fontTextCurrent: listFont[indexFontText],
+                            fontTextChangeValueSetter: (value) {
+                              setState(() {
+                                indexFontText = value;
+                              });
+                            },
                           ));
                 },
               ),
@@ -213,12 +234,13 @@ class _NoteAddPageState extends State<NoteAddPage> {
           child: CustomTextField(
             controller: _titleTextController,
             focusNode: texttitleFocusNode,
-            textColor: Colors.black,
+            textColor: textColor,
             borderColor: listColors[indexColor],
             hint: "Type title here...",
             inputType: TextInputType.text,
             fontWeight: FontWeight.bold,
             textAlign: TextAlign.left,
+            googlefont: listFont[indexFontText],
           ),
         ),
         (isPin == 0)
@@ -249,6 +271,7 @@ class _NoteAddPageState extends State<NoteAddPage> {
           textAlign: iconAlignNote.textAlign,
           fontSize: textStyleNote.sizetext,
           isExpand: true,
+          googlefont: listFont[indexFontText],
         ),
       ),
     );

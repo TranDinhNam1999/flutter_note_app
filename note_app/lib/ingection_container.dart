@@ -21,8 +21,8 @@ Future<void> init() async {
 
   // Bloc
 
-  sl.registerFactory(
-      () => NotesBloc(getAllNotesUsecase: sl(), deleteNoteUsecase: sl()));
+  sl.registerFactory(() => NotesBloc(
+      getAllNotesUsecase: sl(), deleteNoteUsecase: sl(), addNoteUsecase: sl()));
 
   // Usecases
   sl.registerLazySingleton(() => AddNoteUsecase(sl()));

@@ -78,28 +78,36 @@ class NoteLocalDateSourceImpl implements NoteLocalDateSource {
           title: "nam",
           uuid: uuid.v4().toString(),
           isPin: 0,
-          indexColor: 3),
+          indexColor: 3,
+          indexFont: 4,
+          colorText: "0xff000000"),
       NoteModel(
           body: "hahaha hahah hahah hahah hahah hahah",
           title: 'nhật gà',
           uuid: uuid.v4(),
           isPin: 1,
-          indexColor: 2),
+          indexColor: 2,
+          indexFont: 4,
+          colorText: "0xff000000"),
       NoteModel(
           body: "hahaha",
           title: 'nhật gà',
           uuid: uuid.v4(),
           isPin: 1,
-          indexColor: 5),
+          indexColor: 5,
+          indexFont: 4,
+          colorText: "0xff000000"),
       NoteModel(
           body: "hahaha",
           title: 'nhật gà',
           uuid: uuid.v4(),
           isPin: 1,
-          indexColor: 7)
+          indexColor: 7,
+          indexFont: 4,
+          colorText: "0xff000000")
     ];
 
-    //cacheNote(list);
+    cacheNote(list);
 
     final jsonString = sharedPreferences.getString(CACHED_NOTES);
 

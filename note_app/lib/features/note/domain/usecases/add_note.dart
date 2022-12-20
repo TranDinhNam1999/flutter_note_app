@@ -10,7 +10,7 @@ class AddNoteUsecase {
 
   AddNoteUsecase(this.repository);
 
-  Future<Either<Failure, Unit>> call(Note post) async {
-    return await repository.addNote(post);
+  Future<Either<Failure, Unit>> call(Note note) async {
+    return await repository.addNote(note);
   }
 }

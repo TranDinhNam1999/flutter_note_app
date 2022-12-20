@@ -50,7 +50,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
     return TextField(
       focusNode: widget.focusNode,
       obscureText: widget.obscureText,
-      style: GoogleFonts.getFont('Roboto',
+      style: GoogleFonts.getFont(widget.googlefont,
           color: widget.textColor,
           fontWeight: widget.fontWeight,
           fontSize: widget.fontSize),

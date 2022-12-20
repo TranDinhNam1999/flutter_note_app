@@ -17,7 +17,7 @@ class NoteAnimatedTextBottomSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return AnimatedDefaultTextStyle(
       curve: Curves.bounceInOut,
-      duration: const Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 200),
       style: GoogleFonts.montserrat(
           fontSize: 20,
           fontWeight: textStyleNote == textStyleCurrent
