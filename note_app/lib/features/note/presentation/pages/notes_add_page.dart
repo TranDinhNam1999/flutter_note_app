@@ -4,6 +4,7 @@ import 'package:note_app/core/string/icons.dart';
 import 'package:note_app/features/note/presentation/widgets/common/common.dart';
 import 'package:sizer/sizer.dart';
 import '../../../../core/theme/app_color.dart';
+import '../../../../core/util/custom_text_field.dart';
 import '../widgets/notes_add_page/notes_icon.dart';
 import '../widgets/notes_add_page/notes_model_bottom_sheet_text_style.dart';
 import '../widgets/notes_add_page/notes_stick_dialog.dart';
@@ -30,15 +31,18 @@ class _NoteAddPageState extends State<NoteAddPage> {
   final TextEditingController _titleTextController = TextEditingController();
   final TextEditingController _bodyTextController = TextEditingController();
   late FocusNode textBodyFocusNode;
+  late FocusNode texttitleFocusNode;
   late int isPin = 0;
   late int indexColor = 0;
-  late String sizeFontText = "Small";
   late TextStyleEnum textStyleNote = TextStyleEnum.small;
+  late IconAlignEnum iconAlignNote = IconAlignEnum.center;
+  late Color textColor = Colors.black;
 
   @override
   void initState() {
     super.initState();
     textBodyFocusNode = FocusNode();
+    texttitleFocusNode = FocusNode();
   }
 
   @override
@@ -53,6 +57,8 @@ class _NoteAddPageState extends State<NoteAddPage> {
         leading: GestureDetector(
           onTap: (() {
             Navigator.pop(context);
+            textBodyFocusNode.unfocus();
+            texttitleFocusNode.unfocus();
           }),
           child: const Icon(
             Icons.arrow_back_ios_new,
@@ -160,6 +166,18 @@ class _NoteAddPageState extends State<NoteAddPage> {
                                 textStyleNote = value;
                               });
                             },
+                            iconAlignNote: iconAlignNote,
+                            iconAlignEnumValueSetter: (value) {
+                              setState(() {
+                                iconAlignNote = value;
+                              });
+                            },
+                            textColor: textColor,
+                            textColorChangeValueSetter: (value) {
+                              setState(() {
+                                textColor = value;
+                              });
+                            },
                           ));
                 },
               ),
@@ -192,25 +210,15 @@ class _NoteAddPageState extends State<NoteAddPage> {
       children: [
         Flexible(
           flex: 8,
-          child: TextField(
+          child: CustomTextField(
             controller: _titleTextController,
-            style: GoogleFonts.roboto(
-                fontSize: 24, fontWeight: FontWeight.w700, color: Colors.black),
-            decoration: InputDecoration(
-              hintText: 'Type title here...',
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(width: 0, color: listColors[indexColor]),
-              ),
-              focusColor: listColors[indexColor],
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                  width: 0,
-                  color: listColors[indexColor],
-                ),
-              ),
-            ),
-            maxLines: null,
-            keyboardType: TextInputType.text,
+            focusNode: texttitleFocusNode,
+            textColor: Colors.black,
+            borderColor: listColors[indexColor],
+            hint: "Type title here...",
+            inputType: TextInputType.text,
+            fontWeight: FontWeight.bold,
+            textAlign: TextAlign.left,
           ),
         ),
         (isPin == 0)
@@ -232,30 +240,15 @@ class _NoteAddPageState extends State<NoteAddPage> {
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.only(right: 5, left: 5, top: 10),
-        child: TextField(
-          focusNode: textBodyFocusNode,
-          style: GoogleFonts.roboto(
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-              fontSize: textStyleNote.sizetext),
-          textAlign: TextAlign.center,
+        child: CustomTextField(
           controller: _bodyTextController,
-          decoration: InputDecoration(
-            hintText: 'Type text here...',
-            focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(width: 0, color: listColors[indexColor]),
-            ),
-            focusColor: listColors[indexColor],
-            enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-                width: 0,
-                color: listColors[indexColor],
-              ),
-            ),
-          ),
-          keyboardType: TextInputType.multiline,
-          maxLines: null,
-          expands: true,
+          focusNode: textBodyFocusNode,
+          textColor: textColor,
+          borderColor: listColors[indexColor],
+          inputType: TextInputType.multiline,
+          textAlign: iconAlignNote.textAlign,
+          fontSize: textStyleNote.sizetext,
+          isExpand: true,
         ),
       ),
     );

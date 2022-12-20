@@ -1,0 +1,21 @@
+const List<String> listFont = [
+  "Roboto",
+  "IndieFlower",
+  "LexendDeca",
+  "Oswald",
+  "PermanentMarker",
+  "Caveat",
+  "Quicksand",
+  "Pacifico",
+  "AmaticSC",
+  "BadScript",
+  "MeowScript",
+  "Barriecito",
+  "MarckScript",
+  "Neucha",
+  "OpenSansCondensed",
+  "Rubik",
+  "Sacramento",
+  "KellySlab",
+  "RobotoMono"
+];

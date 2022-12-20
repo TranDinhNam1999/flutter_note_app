@@ -99,7 +99,7 @@ class NoteLocalDateSourceImpl implements NoteLocalDateSource {
           indexColor: 7)
     ];
 
-    cacheNote(list);
+    //cacheNote(list);
 
     final jsonString = sharedPreferences.getString(CACHED_NOTES);
 

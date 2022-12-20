@@ -15,6 +15,7 @@ class CustomTextField extends StatefulWidget {
   final double fontSize;
   final FontWeight fontWeight;
   final TextAlign textAlign;
+  final bool isExpand;
 
   const CustomTextField(
       {super.key,
@@ -28,7 +29,8 @@ class CustomTextField extends StatefulWidget {
       required this.focusNode,
       this.fontSize = 24.0,
       this.fontWeight = FontWeight.w400,
-      this.textAlign = TextAlign.center});
+      this.textAlign = TextAlign.center,
+      this.isExpand = false});
 
   @override
   _CustomTextFieldState createState() => _CustomTextFieldState();
@@ -69,7 +71,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
         ),
       ),
       maxLines: null,
-      expands: true,
+      expands: widget.isExpand,
     );
   }
 }
