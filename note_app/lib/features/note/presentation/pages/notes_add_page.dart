@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -14,8 +15,25 @@ import '../widgets/notes_add_page/notes_icon.dart';
 import '../widgets/notes_add_page/notes_model_bottom_sheet_text_style.dart';
 import '../widgets/notes_add_page/notes_stick_dialog.dart';
 
+// ignore: must_be_immutable
 class NoteAddPage extends StatefulWidget {
-  const NoteAddPage({super.key});
+  NoteAddPage(
+      {super.key,
+      this.noteEdit = const Note(
+          uuid: "",
+          title: "title",
+          body: "body",
+          isPin: 0,
+          indexColor: 0,
+          indexFont: 0,
+          colorText: 0,
+          sizeText: 0,
+          alignText: "alignText"),
+      required this.isCheckEdit,
+      this.heroTag = "herotag"});
+  Note noteEdit;
+  bool isCheckEdit;
+  String heroTag;
 
   @override
   State<NoteAddPage> createState() => _NoteAddPageState();
@@ -47,15 +65,38 @@ class _NoteAddPageState extends State<NoteAddPage> {
   @override
   void initState() {
     super.initState();
+    if (widget.isCheckEdit) {
+      isPin = widget.noteEdit.isPin;
+      _titleTextController.text = widget.noteEdit.title;
+      _bodyTextController.text = widget.noteEdit.body;
+      textColor = Color(widget.noteEdit.colorText);
+      indexFontText = widget.noteEdit.indexFont;
+      indexColor = widget.noteEdit.indexColor;
+      textStyleNote = getTextStyleEnum(widget.noteEdit.sizeText);
+      iconAlignNote = getIconAlignEnum(widget.noteEdit.alignText);
+      widget.heroTag = widget.noteEdit.uuid;
+    }
     textBodyFocusNode = FocusNode();
     texttitleFocusNode = FocusNode();
+  }
+
+  TextStyleEnum getTextStyleEnum(int index) {
+    if (index == TextStyleEnum.small.sizetext) return TextStyleEnum.small;
+    if (index == TextStyleEnum.medium.sizetext) return TextStyleEnum.medium;
+    if (index == TextStyleEnum.large.sizetext) return TextStyleEnum.large;
+    return TextStyleEnum.huge;
+  }
+
+  IconAlignEnum getIconAlignEnum(String index) {
+    if (index == IconAlignEnum.left.description) return IconAlignEnum.left;
+    if (index == IconAlignEnum.center.description) return IconAlignEnum.center;
+    return IconAlignEnum.right;
   }
 
   @override
   void dispose() {
     // * Clean up the focus node when the Form is disposed.
     textBodyFocusNode.dispose();
-
     super.dispose();
   }
 
@@ -83,8 +124,12 @@ class _NoteAddPageState extends State<NoteAddPage> {
                     isPin: isPin,
                     indexColor: indexColor,
                     indexFont: indexFontText,
-                    colorText: textColor.toString());
+                    colorText: textColor.value,
+                    sizeText: textStyleNote.sizetext.toInt(),
+                    alignText: iconAlignNote.description);
                 context.read<NotesBloc>().add(AddNoteEvent(note: note));
+
+                Navigator.pop(context);
               }),
               child: Padding(
                 padding: const EdgeInsets.only(right: 10),
@@ -126,12 +171,15 @@ class _NoteAddPageState extends State<NoteAddPage> {
                       color: listColors[indexColor],
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(5),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [_buildTitleNote(), _buildBodyNote()],
+                    child: Hero(
+                      tag: widget.heroTag,
+                      child: Padding(
+                        padding: const EdgeInsets.all(5),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [_buildTitleNote(), _buildBodyNote()],
+                        ),
                       ),
                     ),
                   )
@@ -150,10 +198,51 @@ class _NoteAddPageState extends State<NoteAddPage> {
         children: [
           Row(
             children: [
-              NoteIcon(
-                nameIcon: TRASH_ICON,
-                callback: () {},
-              ),
+              if (widget.isCheckEdit) ...{
+                NoteIcon(
+                  nameIcon: TRASH_ICON,
+                  callback: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return CupertinoAlertDialog(
+                          title: const Text(
+                            "Delete note",
+                            style: TextStyle(color: Colors.red),
+                          ),
+                          content: Container(
+                            decoration: BoxDecoration(
+                              color: listColors[indexColor],
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            height: 200,
+                            width: 100,
+                          ),
+                          actions: <Widget>[
+                            CupertinoDialogAction(
+                              child: const Text("Cancel",
+                                  style: TextStyle(color: Colors.red)),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                            CupertinoDialogAction(
+                              child: const Text("Ok",
+                                  style: TextStyle(color: Colors.green)),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                                context.read<NotesBloc>().add(DeleteNoteEvent(
+                                    uuid: widget.noteEdit.uuid));
+                                Navigator.pop(context);
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                )
+              },
               NoteIcon(
                 nameIcon: PIN_ICON,
                 callback: () {

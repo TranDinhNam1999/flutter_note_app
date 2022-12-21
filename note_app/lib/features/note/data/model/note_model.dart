@@ -8,26 +8,31 @@ class NoteModel extends Note {
       required int isPin,
       required int indexColor,
       required int indexFont,
-      required String colorText})
+      required int colorText,
+      required int sizeText,
+      required String alignText})
       : super(
             uuid: uuid,
             body: body,
             title: title,
             isPin: isPin,
             indexColor: indexColor,
-            indexFont: indexColor,
-            colorText: colorText);
+            indexFont: indexFont,
+            colorText: colorText,
+            sizeText: sizeText,
+            alignText: alignText);
 
   factory NoteModel.fromJson(Map<String, dynamic> json) {
     return NoteModel(
-      uuid: json["uuid"],
-      title: json["title"],
-      body: json["body"],
-      isPin: json["isPin"],
-      indexColor: json["indexColor"],
-      indexFont: json["indexFont"],
-      colorText: json["colorText"],
-    );
+        uuid: json["uuid"],
+        title: json["title"],
+        body: json["body"],
+        isPin: json["isPin"],
+        indexColor: json["indexColor"],
+        indexFont: json["indexFont"],
+        colorText: json["colorText"],
+        sizeText: json["sizeText"],
+        alignText: json["alignText"]);
   }
 
   Map<String, dynamic> toJson() {
@@ -38,7 +43,9 @@ class NoteModel extends Note {
       "isPin": isPin,
       "indexColor": indexColor,
       "indexFont": indexFont,
-      "colorText": colorText
+      "colorText": colorText,
+      "sizeText": sizeText,
+      "alignText": alignText
     };
   }
 }

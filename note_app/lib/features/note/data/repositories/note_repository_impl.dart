@@ -28,7 +28,9 @@ class NotesRepositoryImpl implements NotesRepository {
         isPin: note.isPin,
         indexColor: note.indexColor,
         indexFont: note.indexFont,
-        colorText: note.colorText);
+        colorText: note.colorText,
+        sizeText: note.sizeText,
+        alignText: note.alignText);
 
     return await _getMessage(() => localDateSource.addNote(postModel));
   }
@@ -47,7 +49,9 @@ class NotesRepositoryImpl implements NotesRepository {
         isPin: note.isPin,
         indexColor: note.indexColor,
         indexFont: note.indexFont,
-        colorText: note.colorText);
+        colorText: note.colorText,
+        sizeText: note.sizeText,
+        alignText: note.alignText);
 
     return await _getMessage(() => localDateSource.updateNote(postModel));
   }

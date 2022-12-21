@@ -75,7 +75,9 @@ class _NoteHomePageState extends State<NoteHomePage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const NoteAddPage()),
+                          builder: (context) => NoteAddPage(
+                                isCheckEdit: false,
+                              )),
                     );
                   },
                 ),

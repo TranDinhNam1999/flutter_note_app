@@ -60,9 +60,9 @@ class NoteLocalDateSourceImpl implements NoteLocalDateSource {
       List<NoteModel> list = [];
       list.add(noteModel);
       localNotes = list;
+    } else {
+      localNotes.add(noteModel);
     }
-
-    localNotes.add(noteModel);
 
     sharedPreferences.setString(CACHED_NOTES, json.encode(localNotes));
     return Future.value(unit);
@@ -70,44 +70,52 @@ class NoteLocalDateSourceImpl implements NoteLocalDateSource {
 
   @override
   Future<List<NoteModel>> getCachedNote() async {
-    var uuid = const Uuid();
+    // var uuid = const Uuid();
 
-    List<NoteModel> list = [
-      NoteModel(
-          body: "hehehe",
-          title: "nam",
-          uuid: uuid.v4().toString(),
-          isPin: 0,
-          indexColor: 3,
-          indexFont: 4,
-          colorText: "0xff000000"),
-      NoteModel(
-          body: "hahaha hahah hahah hahah hahah hahah",
-          title: 'nhật gà',
-          uuid: uuid.v4(),
-          isPin: 1,
-          indexColor: 2,
-          indexFont: 4,
-          colorText: "0xff000000"),
-      NoteModel(
-          body: "hahaha",
-          title: 'nhật gà',
-          uuid: uuid.v4(),
-          isPin: 1,
-          indexColor: 5,
-          indexFont: 4,
-          colorText: "0xff000000"),
-      NoteModel(
-          body: "hahaha",
-          title: 'nhật gà',
-          uuid: uuid.v4(),
-          isPin: 1,
-          indexColor: 7,
-          indexFont: 4,
-          colorText: "0xff000000")
-    ];
+    // List<NoteModel> list = [
+    //   NoteModel(
+    //       body: "hehehe",
+    //       title: "nam",
+    //       uuid: uuid.v4().toString(),
+    //       isPin: 0,
+    //       indexColor: 3,
+    //       indexFont: 4,
+    //       colorText: 0xff000000,
+    //       sizeText: 30,
+    //       alignText: 'Left'),
+    //   NoteModel(
+    //       body: "hahaha hahah hahah hahah hahah hahah",
+    //       title: 'nhật gà',
+    //       uuid: uuid.v4(),
+    //       isPin: 1,
+    //       indexColor: 2,
+    //       indexFont: 4,
+    //       colorText: 0xff000000,
+    //       sizeText: 30,
+    //       alignText: 'Left'),
+    //   NoteModel(
+    //       body: "hahaha",
+    //       title: 'nhật gà',
+    //       uuid: uuid.v4(),
+    //       isPin: 1,
+    //       indexColor: 5,
+    //       indexFont: 4,
+    //       colorText: 0xff000000,
+    //       sizeText: 30,
+    //       alignText: 'Left'),
+    //   NoteModel(
+    //       body: "hahaha",
+    //       title: 'nhật gà',
+    //       uuid: uuid.v4(),
+    //       isPin: 1,
+    //       indexColor: 7,
+    //       indexFont: 4,
+    //       colorText: 0xff000000,
+    //       sizeText: 30,
+    //       alignText: 'Left')
+    // ];
 
-    cacheNote(list);
+    // cacheNote(list);
 
     final jsonString = sharedPreferences.getString(CACHED_NOTES);
 

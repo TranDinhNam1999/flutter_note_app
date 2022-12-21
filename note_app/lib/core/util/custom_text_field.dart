@@ -47,31 +47,34 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      focusNode: widget.focusNode,
-      obscureText: widget.obscureText,
-      style: GoogleFonts.getFont(widget.googlefont,
-          color: widget.textColor,
-          fontWeight: widget.fontWeight,
-          fontSize: widget.fontSize),
-      textAlign: widget.textAlign,
-      keyboardType: widget.inputType,
-      controller: widget.controller,
-      decoration: InputDecoration(
-        hintText: widget.hint,
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(width: 0, color: widget.borderColor),
-        ),
-        focusColor: widget.borderColor,
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            width: 0,
-            color: widget.borderColor,
+    return Material(
+      color: widget.borderColor,
+      child: TextField(
+        focusNode: widget.focusNode,
+        obscureText: widget.obscureText,
+        style: GoogleFonts.getFont(widget.googlefont,
+            color: widget.textColor,
+            fontWeight: widget.fontWeight,
+            fontSize: widget.fontSize),
+        textAlign: widget.textAlign,
+        keyboardType: widget.inputType,
+        controller: widget.controller,
+        decoration: InputDecoration(
+          hintText: widget.hint,
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(width: 0, color: widget.borderColor),
+          ),
+          focusColor: widget.borderColor,
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              width: 0,
+              color: widget.borderColor,
+            ),
           ),
         ),
+        maxLines: null,
+        expands: widget.isExpand,
       ),
-      maxLines: null,
-      expands: widget.isExpand,
     );
   }
 }
