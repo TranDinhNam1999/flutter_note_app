@@ -1,11 +1,11 @@
-import 'package:flutter/cupertino.dart';
+import 'package:animated_theme_switcher/animated_theme_switcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:note_app/core/theme/app_theme.dart';
 import 'package:note_app/features/note/presentation/bloc/notes_bloc.dart';
-
 import '../widgets/notes_home_page/notes_card_home.dart';
-import 'notes_add_page.dart';
+import '../widgets/notes_home_page/notes_floating_button.dart';
 
 class NoteHomePage extends StatefulWidget {
   const NoteHomePage({super.key});
@@ -21,14 +21,49 @@ class _NoteHomePageState extends State<NoteHomePage> {
         appBar: _buildAppbar(),
         body: _buildBody(),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        floatingActionButton: _buildFloatingActionButton());
+        floatingActionButton: const NoteFloatingBottom());
   }
 
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  Icon iconTheme(BuildContext context) =>
+      ThemeModelInheritedNotifier.of(context).theme.brightness ==
+              Brightness.light
+          ? const Icon(
+              Icons.brightness_3,
+              size: 25,
+              color: Colors.black,
+            )
+          : const Icon(
+              Icons.wb_sunny,
+              size: 25,
+              color: Colors.orange,
+            );
+  ThemeSwitcher leadingAppbar(BuildContext context) => ThemeSwitcher(
+        clipper: const ThemeSwitcherCircleClipper(),
+        builder: (context) {
+          return IconButton(
+            icon: iconTheme(context),
+            onPressed: () {
+              ThemeSwitcher.of(context).changeTheme(
+                theme:
+                    ThemeModelInheritedNotifier.of(context).theme.brightness ==
+                            Brightness.light
+                        ? AppTheme.dark
+                        : AppTheme.light,
+              );
+            },
+          );
+        },
+      );
+
   AppBar _buildAppbar() => AppBar(
-        title: Text(
+        leading: leadingAppbar(context),
+        title: const Text(
           'Notes',
-          style: GoogleFonts.roboto(
-              fontSize: 22, fontWeight: FontWeight.w800, color: Colors.black),
         ),
       );
 
@@ -53,58 +88,4 @@ class _NoteHomePageState extends State<NoteHomePage> {
       ),
     );
   }
-
-  FloatingActionButton _buildFloatingActionButton() => FloatingActionButton(
-        onPressed: () {
-          final act = CupertinoActionSheet(
-              title: const Text(
-                'New note',
-                style: TextStyle(
-                    color: Colors.black87,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700),
-              ),
-              actions: <Widget>[
-                CupertinoActionSheetAction(
-                  child: Text(
-                    'Text',
-                    style: GoogleFonts.roboto(color: Colors.blue),
-                  ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => NoteAddPage(
-                                isCheckEdit: false,
-                              )),
-                    );
-                  },
-                ),
-                CupertinoActionSheetAction(
-                  child: Text(
-                    'Checklist',
-                    style: GoogleFonts.roboto(color: Colors.blue),
-                  ),
-                  onPressed: () {},
-                )
-              ],
-              cancelButton: CupertinoActionSheetAction(
-                child: Text('Cancel',
-                    style: GoogleFonts.roboto(
-                        fontWeight: FontWeight.bold, color: Colors.red)),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ));
-          showCupertinoModalPopup(
-              context: context, builder: (BuildContext context) => act);
-        },
-        backgroundColor: const Color.fromARGB(255, 217, 97, 76),
-        child: const Icon(
-          Icons.add,
-          size: 30,
-          color: Colors.white,
-        ),
-      );
 }

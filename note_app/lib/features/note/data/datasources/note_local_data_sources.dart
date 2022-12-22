@@ -125,6 +125,8 @@ class NoteLocalDateSourceImpl implements NoteLocalDateSource {
           .map<NoteModel>((jsonPost) => NoteModel.fromJson(jsonPost))
           .toList();
 
+      jsonToPostModels.sort(((a, b) => b.isPin.compareTo(a.isPin)));
+
       return Future.value(jsonToPostModels);
     }
     if (jsonString == null) return Future.value([]);

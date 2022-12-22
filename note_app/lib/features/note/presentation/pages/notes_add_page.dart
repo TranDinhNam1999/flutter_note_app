@@ -1,3 +1,6 @@
+// ignore_for_file: unrelated_type_equality_checks
+
+import 'package:animated_theme_switcher/animated_theme_switcher.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -40,9 +43,25 @@ class NoteAddPage extends StatefulWidget {
 }
 
 class _NoteAddPageState extends State<NoteAddPage> {
+  bool isthefirst = true;
+
   @override
   Widget build(BuildContext context) {
+    //* Check theme brightness is light -> set color text is back and set backgourd card is dark
+    //* Check theme brightness is dark -> set color text is white and set backgourd card is light
+    if (!widget.isCheckEdit && isthefirst) {
+      final theme = ThemeModelInheritedNotifier.of(context).theme;
+      textColor = theme.brightness == Brightness.light
+          ? textColor = Colors.black
+          : textColor = Colors.white;
+      indexColor = theme.brightness == Brightness.light ? 0 : 30;
+      colorBottomNavigateBar = theme.brightness == Brightness.light
+          ? textColor = Colors.white
+          : textColor = const Color(0xFF2D2D44);
+      isthefirst = false;
+    }
     MediaQuery.of(context).viewInsets.bottom;
+
     return Scaffold(
       appBar: _buildAppbar(context),
       body: _buidBody(),
@@ -61,6 +80,7 @@ class _NoteAddPageState extends State<NoteAddPage> {
   late IconAlignEnum iconAlignNote = IconAlignEnum.center;
   late Color textColor = Colors.black;
   late int indexFontText = 0;
+  late Color colorBottomNavigateBar = Colors.white;
 
   @override
   void initState() {
@@ -100,22 +120,35 @@ class _NoteAddPageState extends State<NoteAddPage> {
     super.dispose();
   }
 
-  AppBar _buildAppbar(BuildContext context) => AppBar(
-        leading: GestureDetector(
-          onTap: (() {
-            Navigator.pop(context);
-            textBodyFocusNode.unfocus();
-            texttitleFocusNode.unfocus();
-          }),
-          child: const Icon(
-            Icons.arrow_back_ios_new,
-            color: Colors.black,
-            size: 26,
-          ),
+  GestureDetector leadingAppbar(BuildContext context) => GestureDetector(
+        onTap: (() {
+          Navigator.pop(context);
+          textBodyFocusNode.unfocus();
+          texttitleFocusNode.unfocus();
+        }),
+        child: const Icon(
+          Icons.arrow_back_ios_new,
+          size: 26,
         ),
-        actions: [
-          GestureDetector(
-              onTap: (() {
+      );
+  List<Widget> actionAppbar(BuildContext context) => [
+        GestureDetector(
+            onTap: (() {
+              // * If isEdit is True -> action update
+              // * If isEdit is Flase -> action add new
+              if (widget.isCheckEdit) {
+                Note note = Note(
+                    uuid: widget.noteEdit.uuid,
+                    title: _titleTextController.text,
+                    body: _bodyTextController.text,
+                    isPin: isPin,
+                    indexColor: indexColor,
+                    indexFont: indexFontText,
+                    colorText: textColor.value,
+                    sizeText: textStyleNote.sizetext.toInt(),
+                    alignText: iconAlignNote.description);
+                context.read<NotesBloc>().add(UpdateNoteEvent(note: note));
+              } else {
                 var uuid = const Uuid();
                 Note note = Note(
                     uuid: uuid.v4(),
@@ -128,24 +161,27 @@ class _NoteAddPageState extends State<NoteAddPage> {
                     sizeText: textStyleNote.sizetext.toInt(),
                     alignText: iconAlignNote.description);
                 context.read<NotesBloc>().add(AddNoteEvent(note: note));
+              }
 
-                Navigator.pop(context);
-              }),
-              child: Padding(
-                padding: const EdgeInsets.only(right: 10),
-                child: SizedBox(
-                  height: 30,
-                  width: 30,
-                  child: Image.asset(
-                    CHECK_ICON,
-                    fit: BoxFit.contain,
-                  ),
+              Navigator.pop(context);
+            }),
+            child: Padding(
+              padding: const EdgeInsets.only(right: 10),
+              child: SizedBox(
+                height: 30,
+                width: 30,
+                child: Image.asset(
+                  CHECK_ICON,
+                  fit: BoxFit.contain,
                 ),
-              )),
-        ],
-        title: Text('New note',
-            style: GoogleFonts.roboto(
-                color: Colors.black, fontWeight: FontWeight.bold)),
+              ),
+            )),
+      ];
+
+  AppBar _buildAppbar(BuildContext context) => AppBar(
+        leading: leadingAppbar(context),
+        actions: actionAppbar(context),
+        title: const Text('New note'),
       );
 
   Widget _buidBody() {
@@ -169,6 +205,9 @@ class _NoteAddPageState extends State<NoteAddPage> {
                     height: 60.h,
                     decoration: BoxDecoration(
                       color: listColors[indexColor],
+                      image: null,
+                      // image: const DecorationImage(
+                      //     image: AssetImage(photo_1), fit: BoxFit.fill),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Hero(
@@ -192,7 +231,7 @@ class _NoteAddPageState extends State<NoteAddPage> {
 
   Widget _bottomNavigationBar() {
     return Container(
-      color: Colors.white,
+      color: colorBottomNavigateBar,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -202,44 +241,7 @@ class _NoteAddPageState extends State<NoteAddPage> {
                 NoteIcon(
                   nameIcon: TRASH_ICON,
                   callback: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return CupertinoAlertDialog(
-                          title: const Text(
-                            "Delete note",
-                            style: TextStyle(color: Colors.red),
-                          ),
-                          content: Container(
-                            decoration: BoxDecoration(
-                              color: listColors[indexColor],
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            height: 200,
-                            width: 100,
-                          ),
-                          actions: <Widget>[
-                            CupertinoDialogAction(
-                              child: const Text("Cancel",
-                                  style: TextStyle(color: Colors.red)),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                            CupertinoDialogAction(
-                              child: const Text("Ok",
-                                  style: TextStyle(color: Colors.green)),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                                context.read<NotesBloc>().add(DeleteNoteEvent(
-                                    uuid: widget.noteEdit.uuid));
-                                Navigator.pop(context);
-                              },
-                            ),
-                          ],
-                        );
-                      },
-                    );
+                    dialogDeleteNote(context);
                   },
                 )
               },
@@ -330,6 +332,7 @@ class _NoteAddPageState extends State<NoteAddPage> {
             fontWeight: FontWeight.bold,
             textAlign: TextAlign.left,
             googlefont: listFont[indexFontText],
+            isImage: 1,
           ),
         ),
         (isPin == 0)
@@ -361,6 +364,7 @@ class _NoteAddPageState extends State<NoteAddPage> {
           fontSize: textStyleNote.sizetext,
           isExpand: true,
           googlefont: listFont[indexFontText],
+          isImage: 1,
         ),
       ),
     );
@@ -385,4 +389,54 @@ class _NoteAddPageState extends State<NoteAddPage> {
         },
         transitionDuration: const Duration(milliseconds: 300));
   }
+
+  dialogDeleteNote(BuildContext context) => showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return CupertinoAlertDialog(
+            title: const Text(
+              "Delete note",
+              style: TextStyle(color: Colors.red),
+            ),
+            content: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: listColors[indexColor],
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                height: 200,
+                width: 100,
+                child: Center(
+                    child: FittedBox(
+                  child: Text(
+                    _titleTextController.text,
+                    style: GoogleFonts.getFont(listFont[indexFontText],
+                        fontSize: 24, color: textColor),
+                  ),
+                )),
+              ),
+            ),
+            actions: <Widget>[
+              CupertinoDialogAction(
+                child:
+                    const Text("Cancel", style: TextStyle(color: Colors.red)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              CupertinoDialogAction(
+                child: const Text("Ok", style: TextStyle(color: Colors.green)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  context
+                      .read<NotesBloc>()
+                      .add(DeleteNoteEvent(uuid: widget.noteEdit.uuid));
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          );
+        },
+      );
 }

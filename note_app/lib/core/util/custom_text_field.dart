@@ -16,6 +16,7 @@ class CustomTextField extends StatefulWidget {
   final FontWeight fontWeight;
   final TextAlign textAlign;
   final bool isExpand;
+  final int isImage;
 
   const CustomTextField(
       {super.key,
@@ -30,7 +31,8 @@ class CustomTextField extends StatefulWidget {
       this.fontSize = 24.0,
       this.fontWeight = FontWeight.w400,
       this.textAlign = TextAlign.center,
-      this.isExpand = false});
+      this.isExpand = false,
+      this.isImage = 0});
 
   @override
   _CustomTextFieldState createState() => _CustomTextFieldState();
@@ -42,13 +44,17 @@ class _CustomTextFieldState extends State<CustomTextField> {
   @override
   void initState() {
     super.initState();
-    currentColor = widget.borderColor;
+    if (widget.isImage == 1) {
+      currentColor = widget.borderColor.withOpacity(0);
+    } else {
+      currentColor = widget.borderColor;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: widget.borderColor,
+      color: currentColor,
       child: TextField(
         focusNode: widget.focusNode,
         obscureText: widget.obscureText,
@@ -62,13 +68,13 @@ class _CustomTextFieldState extends State<CustomTextField> {
         decoration: InputDecoration(
           hintText: widget.hint,
           focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(width: 0, color: widget.borderColor),
+            borderSide: BorderSide(width: 0, color: currentColor),
           ),
-          focusColor: widget.borderColor,
+          focusColor: currentColor,
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(
               width: 0,
-              color: widget.borderColor,
+              color: currentColor,
             ),
           ),
         ),

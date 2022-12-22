@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'app_color.dart';
 
 ThemeData lightTheme = ThemeData(
-    appBarTheme: const AppBarTheme(
-        backgroundColor: primaryAppbarColor, centerTitle: true),
+    appBarTheme: AppBarTheme(
+        iconTheme: const IconThemeData(color: Colors.black),
+        titleTextStyle: GoogleFonts.roboto(
+            fontSize: 22, fontWeight: FontWeight.w800, color: Colors.black),
+        backgroundColor: primaryAppbarColor,
+        centerTitle: true),
     scaffoldBackgroundColor: primaryColor,
     brightness: Brightness.light,
     primaryColor: primaryColor,
@@ -15,7 +20,7 @@ ThemeData lightTheme = ThemeData(
     progressIndicatorTheme:
         const ProgressIndicatorThemeData(color: primaryColor),
     floatingActionButtonTheme: const FloatingActionButtonThemeData(
-      backgroundColor: primaryColor,
+      backgroundColor: Color.fromARGB(255, 217, 97, 76),
       foregroundColor: secondaryColor,
     ),
     inputDecorationTheme: InputDecorationTheme(
@@ -29,6 +34,7 @@ ThemeData lightTheme = ThemeData(
         borderRadius: BorderRadius.circular(12),
       ),
     ),
+    iconTheme: const IconThemeData(color: Colors.white),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all<Color>(secondaryColor),

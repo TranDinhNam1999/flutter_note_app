@@ -45,5 +45,8 @@ const List<Color> listColors = [
   Color.fromARGB(255, 17, 17, 17)
 ];
 
-const primaryColorDark = Color(0xff51eec2);
+const primaryColorDark = Color(0xFF2D2D44);
 const secondaryColorDark = Color(0xff082659);
+
+const thirdColorDark = const Color(0xFF1E1E2C);
+const fourColorDark = const Color(0xFF2D2D44);

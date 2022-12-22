@@ -66,13 +66,16 @@ class NotesCardHome extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       note.title.isNotEmpty
-                          ? FittedBox(
-                              child: Text(note.title,
-                                  style: GoogleFonts.getFont(
-                                      listFont[note.indexFont],
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w700,
-                                      color: Color(note.colorText))),
+                          ? Flexible(
+                              flex: 8,
+                              child: FittedBox(
+                                child: Text(note.title,
+                                    style: GoogleFonts.getFont(
+                                        listFont[note.indexFont],
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w700,
+                                        color: Color(note.colorText))),
+                              ),
                             )
                           : const Text(''),
                       (note.isPin == 0)
