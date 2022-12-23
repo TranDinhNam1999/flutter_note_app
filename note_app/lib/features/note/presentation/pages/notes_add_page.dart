@@ -4,6 +4,7 @@ import 'package:animated_theme_switcher/animated_theme_switcher.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:note_app/core/string/icons.dart';
 import 'package:note_app/core/theme/app_font.dart';
@@ -11,6 +12,7 @@ import 'package:note_app/features/note/presentation/widgets/common/common.dart';
 import 'package:sizer/sizer.dart';
 import 'package:uuid/uuid.dart';
 import '../../../../core/theme/app_color.dart';
+import '../../../../core/theme/app_image.dart';
 import '../../../../core/util/custom_text_field.dart';
 import '../../domain/entites/note.dart';
 import '../bloc/notes_bloc.dart';
@@ -31,7 +33,8 @@ class NoteAddPage extends StatefulWidget {
           indexFont: 0,
           colorText: 0,
           sizeText: 0,
-          alignText: "alignText"),
+          alignText: "alignText",
+          indexImage: -1),
       required this.isCheckEdit,
       this.heroTag = "herotag"});
   Note noteEdit;
@@ -51,13 +54,12 @@ class _NoteAddPageState extends State<NoteAddPage> {
     //* Check theme brightness is dark -> set color text is white and set backgourd card is light
     if (!widget.isCheckEdit && isthefirst) {
       final theme = ThemeModelInheritedNotifier.of(context).theme;
-      textColor = theme.brightness == Brightness.light
-          ? textColor = Colors.black
-          : textColor = Colors.white;
+      textColor =
+          theme.brightness == Brightness.light ? Colors.black : Colors.white;
       indexColor = theme.brightness == Brightness.light ? 0 : 30;
       colorBottomNavigateBar = theme.brightness == Brightness.light
-          ? textColor = Colors.white
-          : textColor = const Color(0xFF2D2D44);
+          ? Colors.white
+          : const Color(0xFF2D2D44);
       isthefirst = false;
     }
     MediaQuery.of(context).viewInsets.bottom;
@@ -76,9 +78,11 @@ class _NoteAddPageState extends State<NoteAddPage> {
   late FocusNode texttitleFocusNode;
   late int isPin = 0;
   late int indexColor = 0;
+  late int indexImage = -1;
+  late bool isNotColor = false;
   late TextStyleEnum textStyleNote = TextStyleEnum.small;
   late IconAlignEnum iconAlignNote = IconAlignEnum.center;
-  late Color textColor = Colors.black;
+  late Color textColor;
   late int indexFontText = 0;
   late Color colorBottomNavigateBar = Colors.white;
 
@@ -95,6 +99,8 @@ class _NoteAddPageState extends State<NoteAddPage> {
       textStyleNote = getTextStyleEnum(widget.noteEdit.sizeText);
       iconAlignNote = getIconAlignEnum(widget.noteEdit.alignText);
       widget.heroTag = widget.noteEdit.uuid;
+      indexImage = widget.noteEdit.indexImage;
+      isNotColor = widget.noteEdit.indexImage >= 0 ? true : false;
     }
     textBodyFocusNode = FocusNode();
     texttitleFocusNode = FocusNode();
@@ -146,7 +152,8 @@ class _NoteAddPageState extends State<NoteAddPage> {
                     indexFont: indexFontText,
                     colorText: textColor.value,
                     sizeText: textStyleNote.sizetext.toInt(),
-                    alignText: iconAlignNote.description);
+                    alignText: iconAlignNote.description,
+                    indexImage: indexImage);
                 context.read<NotesBloc>().add(UpdateNoteEvent(note: note));
               } else {
                 var uuid = const Uuid();
@@ -159,7 +166,8 @@ class _NoteAddPageState extends State<NoteAddPage> {
                     indexFont: indexFontText,
                     colorText: textColor.value,
                     sizeText: textStyleNote.sizetext.toInt(),
-                    alignText: iconAlignNote.description);
+                    alignText: iconAlignNote.description,
+                    indexImage: indexImage);
                 context.read<NotesBloc>().add(AddNoteEvent(note: note));
               }
 
@@ -204,22 +212,35 @@ class _NoteAddPageState extends State<NoteAddPage> {
                     width: 92.w,
                     height: 60.h,
                     decoration: BoxDecoration(
-                      color: listColors[indexColor],
-                      image: null,
-                      // image: const DecorationImage(
-                      //     image: AssetImage(photo_1), fit: BoxFit.fill),
+                      color: isNotColor
+                          ? listColors[indexColor].withOpacity(0)
+                          : listColors[indexColor],
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Hero(
-                      tag: widget.heroTag,
-                      child: Padding(
-                        padding: const EdgeInsets.all(5),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [_buildTitleNote(), _buildBodyNote()],
+                    child: Stack(
+                      children: [
+                        if (indexImage >= 0) ...{
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(12.0),
+                            child: SvgPicture.asset(
+                              listImage[indexImage],
+                              alignment: Alignment.center,
+                              fit: BoxFit.fill,
+                            ),
+                          )
+                        },
+                        Hero(
+                          tag: widget.heroTag,
+                          child: Padding(
+                            padding: const EdgeInsets.all(5),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [_buildTitleNote(), _buildBodyNote()],
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     ),
                   )
                 ],
@@ -380,11 +401,21 @@ class _NoteAddPageState extends State<NoteAddPage> {
           var curve = Curves.easeInOut.transform(a1.value);
           return Transform.scale(
             scale: curve,
-            child: NoteStickDialog(indexColorValueSetter: ((value) {
-              setState(() {
-                indexColor = value;
-              });
-            })),
+            child: NoteStickDialog(
+              indexColorValueSetter: ((value) {
+                setState(() {
+                  indexColor = value;
+                  indexImage = -1;
+                  isNotColor = false;
+                });
+              }),
+              indexImageValueSetter: ((value) {
+                setState(() {
+                  indexImage = value;
+                  isNotColor = true;
+                });
+              }),
+            ),
           );
         },
         transitionDuration: const Duration(milliseconds: 300));

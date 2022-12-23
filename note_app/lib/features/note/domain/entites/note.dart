@@ -10,6 +10,7 @@ class Note extends Equatable {
   final int colorText;
   final int sizeText;
   final String alignText;
+  final int indexImage;
 
   const Note(
       {required this.uuid,
@@ -20,7 +21,8 @@ class Note extends Equatable {
       required this.indexFont,
       required this.colorText,
       required this.sizeText,
-      required this.alignText});
+      required this.alignText,
+      required this.indexImage});
 
   @override
   List<Object?> get props => [
@@ -32,6 +34,7 @@ class Note extends Equatable {
         indexFont,
         colorText,
         sizeText,
-        alignText
+        alignText,
+        indexImage
       ];
 }

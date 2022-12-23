@@ -5,7 +5,6 @@ import 'package:dartz/dartz.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/error/exceptions.dart';
 import '../model/note_model.dart';
-import 'package:uuid/uuid.dart';
 
 const CACHED_NOTES = "CACHED_NOTES";
 

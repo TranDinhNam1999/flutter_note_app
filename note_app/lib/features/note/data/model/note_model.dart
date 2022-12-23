@@ -10,7 +10,8 @@ class NoteModel extends Note {
       required int indexFont,
       required int colorText,
       required int sizeText,
-      required String alignText})
+      required String alignText,
+      required int indexImage})
       : super(
             uuid: uuid,
             body: body,
@@ -20,7 +21,8 @@ class NoteModel extends Note {
             indexFont: indexFont,
             colorText: colorText,
             sizeText: sizeText,
-            alignText: alignText);
+            alignText: alignText,
+            indexImage: indexImage);
 
   factory NoteModel.fromJson(Map<String, dynamic> json) {
     return NoteModel(
@@ -32,7 +34,8 @@ class NoteModel extends Note {
         indexFont: json["indexFont"],
         colorText: json["colorText"],
         sizeText: json["sizeText"],
-        alignText: json["alignText"]);
+        alignText: json["alignText"],
+        indexImage: json["indexImage"]);
   }
 
   Map<String, dynamic> toJson() {
@@ -45,7 +48,8 @@ class NoteModel extends Note {
       "indexFont": indexFont,
       "colorText": colorText,
       "sizeText": sizeText,
-      "alignText": alignText
+      "alignText": alignText,
+      "indexImage": indexImage
     };
   }
 }

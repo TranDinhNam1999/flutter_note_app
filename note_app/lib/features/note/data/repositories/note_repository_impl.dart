@@ -30,7 +30,8 @@ class NotesRepositoryImpl implements NotesRepository {
         indexFont: note.indexFont,
         colorText: note.colorText,
         sizeText: note.sizeText,
-        alignText: note.alignText);
+        alignText: note.alignText,
+        indexImage: note.indexImage);
 
     return await _getMessage(() => localDateSource.addNote(postModel));
   }
@@ -51,7 +52,8 @@ class NotesRepositoryImpl implements NotesRepository {
         indexFont: note.indexFont,
         colorText: note.colorText,
         sizeText: note.sizeText,
-        alignText: note.alignText);
+        alignText: note.alignText,
+        indexImage: note.indexImage);
 
     return await _getMessage(() => localDateSource.updateNote(postModel));
   }

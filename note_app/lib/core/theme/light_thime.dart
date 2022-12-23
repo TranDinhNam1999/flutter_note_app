@@ -17,6 +17,12 @@ ThemeData lightTheme = ThemeData(
     colorScheme: const ColorScheme.light(
       primary: primaryColor,
     ),
+    cardTheme: CardTheme(
+      shape: RoundedRectangleBorder(
+        side: const BorderSide(color: Colors.white),
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+    ),
     progressIndicatorTheme:
         const ProgressIndicatorThemeData(color: primaryColor),
     floatingActionButtonTheme: const FloatingActionButtonThemeData(
@@ -34,7 +40,6 @@ ThemeData lightTheme = ThemeData(
         borderRadius: BorderRadius.circular(12),
       ),
     ),
-    iconTheme: const IconThemeData(color: Colors.white),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all<Color>(secondaryColor),

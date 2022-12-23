@@ -1,12 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:note_app/core/string/icons.dart';
 import 'package:note_app/core/theme/app_font.dart';
 import 'package:note_app/features/note/presentation/bloc/notes_bloc.dart';
 
 import '../../../../../core/theme/app_color.dart';
+import '../../../../../core/theme/app_image.dart';
 import '../../../domain/entites/note.dart';
 import '../../pages/notes_add_page.dart';
 
@@ -49,70 +51,86 @@ class NotesCardHome extends StatelessWidget {
                     )),
           );
         }),
-        child: Hero(
-          tag: note.uuid,
-          child: Container(
-            decoration: BoxDecoration(
-              color: listColors[note.indexColor],
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.only(left: 10, right: 5, top: 10),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Stack(
+          children: [
+            if (note.indexImage >= 0) ...{
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12.0),
+                child: SvgPicture.asset(
+                  listImage[note.indexImage],
+                  alignment: Alignment.center,
+                  fit: BoxFit.fill,
+                ),
+              )
+            },
+            Hero(
+              tag: note.uuid,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: note.indexImage >= 0
+                      ? listColors[note.indexColor].withOpacity(0)
+                      : listColors[note.indexColor],
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 10, right: 5, top: 10),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      note.title.isNotEmpty
-                          ? Flexible(
-                              flex: 8,
-                              child: FittedBox(
-                                child: Text(note.title,
-                                    style: GoogleFonts.getFont(
-                                        listFont[note.indexFont],
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w700,
-                                        color: Color(note.colorText))),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          note.title.isNotEmpty
+                              ? Flexible(
+                                  flex: 8,
+                                  child: FittedBox(
+                                    child: Text(note.title,
+                                        style: GoogleFonts.getFont(
+                                            listFont[note.indexFont],
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w700,
+                                            color: Color(note.colorText))),
+                                  ),
+                                )
+                              : const Text(''),
+                          (note.isPin == 0)
+                              ? const SizedBox(
+                                  width: 0,
+                                  height: 0,
+                                )
+                              : Flexible(
+                                  flex: 2,
+                                  child: Image.asset(
+                                    PIN_ICON,
+                                  ),
+                                )
+                        ],
+                      ),
+                      note.body.isNotEmpty
+                          ? Expanded(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                    child: FittedBox(
+                                      child: Text(note.body,
+                                          style: GoogleFonts.getFont(
+                                              listFont[note.indexFont],
+                                              fontWeight: FontWeight.w500,
+                                              color: Color(note.colorText))),
+                                    ),
+                                  ),
+                                ],
                               ),
                             )
                           : const Text(''),
-                      (note.isPin == 0)
-                          ? const SizedBox(
-                              width: 0,
-                              height: 0,
-                            )
-                          : Flexible(
-                              flex: 2,
-                              child: Image.asset(
-                                PIN_ICON,
-                              ),
-                            )
                     ],
                   ),
-                  note.body.isNotEmpty
-                      ? Expanded(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Expanded(
-                                child: FittedBox(
-                                  child: Text(note.body,
-                                      style: GoogleFonts.getFont(
-                                          listFont[note.indexFont],
-                                          fontWeight: FontWeight.w500,
-                                          color: Color(note.colorText))),
-                                ),
-                              ),
-                            ],
-                          ),
-                        )
-                      : const Text(''),
-                ],
+                ),
               ),
             ),
-          ),
+          ],
         ),
       ),
     );

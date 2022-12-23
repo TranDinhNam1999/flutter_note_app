@@ -1,7 +1,6 @@
 import 'package:animated_theme_switcher/animated_theme_switcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:note_app/core/theme/app_theme.dart';
 import 'package:note_app/features/note/presentation/bloc/notes_bloc.dart';
 import '../widgets/notes_home_page/notes_card_home.dart';
