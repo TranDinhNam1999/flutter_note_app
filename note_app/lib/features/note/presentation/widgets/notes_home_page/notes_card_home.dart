@@ -93,7 +93,7 @@ class NotesCardHome extends StatelessWidget {
                                             color: Color(note.colorText))),
                                   ),
                                 )
-                              : const Text(''),
+                              : const Flexible(flex: 8, child: Text('')),
                           (note.isPin == 0)
                               ? const SizedBox(
                                   width: 0,

@@ -25,7 +25,7 @@ class NoteStickDialog extends StatelessWidget {
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(18)),
           alignment: FractionalOffset.center,
           height: 70.h,
-          width: 85.w,
+          width: 90.w,
           child: Card(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12.0),
