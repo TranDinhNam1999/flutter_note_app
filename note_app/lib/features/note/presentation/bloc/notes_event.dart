@@ -38,4 +38,25 @@ class UpdateNoteEvent extends NotesEvent {
   List<Object> get props => [note];
 }
 
+class ChangePinNodeEvent extends NotesEvent {
+  final int isPin;
+  final String uuid;
+
+  const ChangePinNodeEvent({required this.isPin, required this.uuid});
+
+  @override
+  List<Object> get props => [isPin, uuid];
+}
+
+class ChangeCheckboxNodeEvent extends NotesEvent {
+  final String uuid;
+  final List<CheckListModel> listCheckModel;
+
+  const ChangeCheckboxNodeEvent(
+      {required this.uuid, required this.listCheckModel});
+
+  @override
+  List<Object> get props => [uuid, listCheckModel];
+}
+
 class RefreshPostsEvent extends NotesEvent {}

@@ -63,70 +63,67 @@ class NotesCardHome extends StatelessWidget {
                 ),
               )
             },
-            Hero(
-              tag: note.uuid,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: note.indexImage >= 0
-                      ? listColors[note.indexColor].withOpacity(0)
-                      : listColors[note.indexColor],
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 10, right: 5, top: 10),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          note.title.isNotEmpty
-                              ? Flexible(
-                                  flex: 8,
+            Container(
+              decoration: BoxDecoration(
+                color: note.indexImage >= 0
+                    ? listColors[note.indexColor].withOpacity(0)
+                    : listColors[note.indexColor],
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.only(left: 10, right: 5, top: 10),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        note.title.isNotEmpty
+                            ? Flexible(
+                                flex: 8,
+                                child: FittedBox(
+                                  child: Text(note.title,
+                                      style: GoogleFonts.getFont(
+                                          listFont[note.indexFont],
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w700,
+                                          color: Color(note.colorText))),
+                                ),
+                              )
+                            : const Flexible(flex: 8, child: Text('')),
+                        (note.isPin == 0)
+                            ? const SizedBox(
+                                width: 0,
+                                height: 0,
+                              )
+                            : Flexible(
+                                flex: 2,
+                                child: Image.asset(
+                                  PIN_ICON,
+                                ),
+                              )
+                      ],
+                    ),
+                    note.body.isNotEmpty
+                        ? Expanded(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Expanded(
                                   child: FittedBox(
-                                    child: Text(note.title,
+                                    child: Text(note.body,
                                         style: GoogleFonts.getFont(
                                             listFont[note.indexFont],
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w700,
+                                            fontWeight: FontWeight.w500,
                                             color: Color(note.colorText))),
                                   ),
-                                )
-                              : const Flexible(flex: 8, child: Text('')),
-                          (note.isPin == 0)
-                              ? const SizedBox(
-                                  width: 0,
-                                  height: 0,
-                                )
-                              : Flexible(
-                                  flex: 2,
-                                  child: Image.asset(
-                                    PIN_ICON,
-                                  ),
-                                )
-                        ],
-                      ),
-                      note.body.isNotEmpty
-                          ? Expanded(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Expanded(
-                                    child: FittedBox(
-                                      child: Text(note.body,
-                                          style: GoogleFonts.getFont(
-                                              listFont[note.indexFont],
-                                              fontWeight: FontWeight.w500,
-                                              color: Color(note.colorText))),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            )
-                          : const Text(''),
-                    ],
-                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        : const Text(''),
+                  ],
                 ),
               ),
             ),

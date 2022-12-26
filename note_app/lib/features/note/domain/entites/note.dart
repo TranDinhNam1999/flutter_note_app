@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:note_app/features/note/data/model/note_check_list.dart';
 
 class Note extends Equatable {
   final String uuid;
@@ -11,6 +12,7 @@ class Note extends Equatable {
   final int sizeText;
   final String alignText;
   final int indexImage;
+  final List<CheckListModel> listCheck;
 
   const Note(
       {required this.uuid,
@@ -22,7 +24,8 @@ class Note extends Equatable {
       required this.colorText,
       required this.sizeText,
       required this.alignText,
-      required this.indexImage});
+      required this.indexImage,
+      required this.listCheck});
 
   @override
   List<Object?> get props => [
@@ -35,6 +38,7 @@ class Note extends Equatable {
         colorText,
         sizeText,
         alignText,
-        indexImage
+        indexImage,
+        listCheck
       ];
 }

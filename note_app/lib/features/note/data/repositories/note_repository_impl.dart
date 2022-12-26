@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:note_app/features/note/data/model/note_check_list.dart';
 import 'package:note_app/features/note/domain/entites/note.dart';
 
 import '../../../../core/error/failure.dart';
@@ -31,7 +32,8 @@ class NotesRepositoryImpl implements NotesRepository {
         colorText: note.colorText,
         sizeText: note.sizeText,
         alignText: note.alignText,
-        indexImage: note.indexImage);
+        indexImage: note.indexImage,
+        listCheck: note.listCheck);
 
     return await _getMessage(() => localDateSource.addNote(postModel));
   }
@@ -53,7 +55,8 @@ class NotesRepositoryImpl implements NotesRepository {
         colorText: note.colorText,
         sizeText: note.sizeText,
         alignText: note.alignText,
-        indexImage: note.indexImage);
+        indexImage: note.indexImage,
+        listCheck: note.listCheck);
 
     return await _getMessage(() => localDateSource.updateNote(postModel));
   }
@@ -63,5 +66,17 @@ class NotesRepositoryImpl implements NotesRepository {
     await deleteOrUpdateOrAddPost();
 
     return const Right(unit);
+  }
+
+  @override
+  Future<Either<Failure, Unit>> changeCheckBoxNote(
+      String uuid, List<CheckListModel> listCheck) async {
+    return await _getMessage(
+        () => localDateSource.chnageCheckBoxNote(uuid, listCheck));
+  }
+
+  @override
+  Future<Either<Failure, Unit>> changePinNote(String uuid, int isPin) async {
+    return await _getMessage(() => localDateSource.changePinNote(uuid, isPin));
   }
 }

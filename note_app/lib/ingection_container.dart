@@ -1,3 +1,5 @@
+import 'package:note_app/features/note/domain/usecases/change_checkbox_note.dart';
+import 'package:note_app/features/note/domain/usecases/change_pin_note.dart';
 import 'package:note_app/features/note/presentation/bloc/notes_bloc.dart';
 
 import 'core/network/network_info.dart';
@@ -25,13 +27,17 @@ Future<void> init() async {
       getAllNotesUsecase: sl(),
       deleteNoteUsecase: sl(),
       addNoteUsecase: sl(),
-      updateNoteUsecase: sl()));
+      updateNoteUsecase: sl(),
+      changePinNoteUsecase: sl(),
+      changeCheckBoxNoteUsecase: sl()));
 
   // Usecases
   sl.registerLazySingleton(() => AddNoteUsecase(sl()));
   sl.registerLazySingleton(() => DeleteNoteUsecase(sl()));
   sl.registerLazySingleton(() => GetAllNotesUsecase(sl()));
   sl.registerLazySingleton(() => UpdateNoteUsecase(sl()));
+  sl.registerLazySingleton(() => ChangePinNoteUsecase(sl()));
+  sl.registerLazySingleton(() => ChangeCheckBoxNoteUsecase(sl()));
 
   // Repository
   sl.registerLazySingleton<NotesRepository>(

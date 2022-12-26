@@ -38,7 +38,17 @@ class NoteFloatingBottom extends StatelessWidget {
                   'Checklist',
                   style: GoogleFonts.roboto(color: Colors.blue),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => NoteAddPage(
+                              isCheckEdit: false,
+                              isCheckList: true,
+                            )),
+                  );
+                },
               )
             ],
             cancelButton: CupertinoActionSheetAction(

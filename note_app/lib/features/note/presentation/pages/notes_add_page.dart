@@ -8,6 +8,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:note_app/core/string/icons.dart';
 import 'package:note_app/core/theme/app_font.dart';
+import 'package:note_app/features/note/data/model/note_check_list.dart';
 import 'package:note_app/features/note/presentation/widgets/common/common.dart';
 import 'package:sizer/sizer.dart';
 import 'package:uuid/uuid.dart';
@@ -34,11 +35,14 @@ class NoteAddPage extends StatefulWidget {
           colorText: 0,
           sizeText: 0,
           alignText: "alignText",
-          indexImage: -1),
+          indexImage: -1,
+          listCheck: []),
       required this.isCheckEdit,
+      this.isCheckList = false,
       this.heroTag = "herotag"});
   Note noteEdit;
   bool isCheckEdit;
+  bool isCheckList;
   String heroTag;
 
   @override
@@ -59,9 +63,14 @@ class _NoteAddPageState extends State<NoteAddPage> {
       indexColor = theme.brightness == Brightness.light ? 0 : 30;
       isthefirst = false;
     }
+
+    if (listItem.isNotEmpty) {
+      widget.isCheckList = true;
+    }
     MediaQuery.of(context).viewInsets.bottom;
 
     return Scaffold(
+      backgroundColor: listColors[indexColor],
       appBar: _buildAppbar(context),
       body: _buidBody(),
       bottomNavigationBar: _bottomNavigationBar(),
@@ -71,6 +80,8 @@ class _NoteAddPageState extends State<NoteAddPage> {
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _titleTextController = TextEditingController();
   final TextEditingController _bodyTextController = TextEditingController();
+  final TextEditingController _bodyCheckListController =
+      TextEditingController();
   late FocusNode textBodyFocusNode;
   late FocusNode texttitleFocusNode;
   late int isPin = 0;
@@ -81,8 +92,9 @@ class _NoteAddPageState extends State<NoteAddPage> {
   late IconAlignEnum iconAlignNote = IconAlignEnum.left;
   late Color textColor;
   late int indexFontText = 0;
-  late int isChecklist = 1;
-  late List<String> listItem = ["sdasds", "sdasdsd"];
+  late List<CheckListModel> listItem = [];
+  late bool isCheckValue = false;
+  late bool isAlowEdit = true;
 
   @override
   void initState() {
@@ -99,6 +111,8 @@ class _NoteAddPageState extends State<NoteAddPage> {
       widget.heroTag = widget.noteEdit.uuid;
       indexImage = widget.noteEdit.indexImage;
       isNotColor = widget.noteEdit.indexImage >= 0 ? true : false;
+      listItem.addAll(widget.noteEdit.listCheck);
+      isAlowEdit = false;
     }
     textBodyFocusNode = FocusNode();
     texttitleFocusNode = FocusNode();
@@ -140,23 +154,10 @@ class _NoteAddPageState extends State<NoteAddPage> {
             onTap: (() {
               // * If isEdit is True -> action update
               // * If isEdit is Flase -> action add new
-              if (widget.isCheckEdit) {
-                Note note = Note(
-                    uuid: widget.noteEdit.uuid,
-                    title: _titleTextController.text,
-                    body: _bodyTextController.text,
-                    isPin: isPin,
-                    indexColor: indexColor,
-                    indexFont: indexFontText,
-                    colorText: textColor.value,
-                    sizeText: textStyleNote.sizetext.toInt(),
-                    alignText: iconAlignNote.description,
-                    indexImage: indexImage);
-                context.read<NotesBloc>().add(UpdateNoteEvent(note: note));
-              } else {
+              if (isAlowEdit) {
                 var uuid = const Uuid();
                 Note note = Note(
-                    uuid: uuid.v4(),
+                    uuid: widget.isCheckEdit ? widget.noteEdit.uuid : uuid.v4(),
                     title: _titleTextController.text,
                     body: _bodyTextController.text,
                     isPin: isPin,
@@ -165,21 +166,36 @@ class _NoteAddPageState extends State<NoteAddPage> {
                     colorText: textColor.value,
                     sizeText: textStyleNote.sizetext.toInt(),
                     alignText: iconAlignNote.description,
-                    indexImage: indexImage);
-                context.read<NotesBloc>().add(AddNoteEvent(note: note));
-              }
+                    indexImage: indexImage,
+                    listCheck: listItem);
 
-              Navigator.pop(context);
+                if (widget.isCheckEdit) {
+                  context.read<NotesBloc>().add(UpdateNoteEvent(note: note));
+                } else {
+                  context.read<NotesBloc>().add(AddNoteEvent(note: note));
+                }
+
+                Navigator.pop(context);
+              } else {
+                setState(() {
+                  isAlowEdit = true;
+                });
+              }
             }),
             child: Padding(
               padding: const EdgeInsets.only(right: 10),
               child: SizedBox(
                 height: 30,
                 width: 30,
-                child: Image.asset(
-                  CHECK_ICON,
-                  fit: BoxFit.contain,
-                ),
+                child: isAlowEdit
+                    ? Image.asset(
+                        CHECK_ICON,
+                        fit: BoxFit.contain,
+                      )
+                    : Image.asset(
+                        EDIT_ICON,
+                        fit: BoxFit.contain,
+                      ),
               ),
             )),
       ];
@@ -205,7 +221,6 @@ class _NoteAddPageState extends State<NoteAddPage> {
                 children: [
                   Container(
                     width: 100.w,
-                    height: 100.h,
                     decoration: BoxDecoration(
                       color: isNotColor
                           ? listColors[indexColor].withOpacity(0)
@@ -220,14 +235,14 @@ class _NoteAddPageState extends State<NoteAddPage> {
                             fit: BoxFit.fitHeight,
                           )
                         },
-                        Hero(
-                          tag: widget.heroTag,
+                        Material(
+                          color: isNotColor
+                              ? listColors[indexColor].withOpacity(0)
+                              : listColors[indexColor],
                           child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               _buildTitleNote(),
-                              isChecklist == 0
+                              !widget.isCheckList
                                   ? _buildBodyTextNote()
                                   : _buidldBodyCheckListNote()
                             ],
@@ -256,60 +271,77 @@ class _NoteAddPageState extends State<NoteAddPage> {
               },
             )
           },
-          NoteIcon(
-            nameIcon: PIN_ICON,
-            callback: () {
-              setState(() {
-                if (isPin == 0) {
-                  isPin = 1;
-                } else {
-                  isPin = 0;
-                }
-              });
-            },
+          Flexible(
+            flex: 1,
+            child: NoteIcon(
+              nameIcon: PIN_ICON,
+              callback: () {
+                setState(() {
+                  if (isPin == 0) {
+                    isPin = 1;
+                  } else {
+                    isPin = 0;
+                  }
+                  if (widget.isCheckEdit) {
+                    context.read<NotesBloc>().add(ChangePinNodeEvent(
+                        isPin: isPin, uuid: widget.noteEdit.uuid));
+                  }
+                });
+              },
+            ),
           ),
-          NoteIcon(
-            nameIcon: FONT_ICON,
-            callback: () {
-              showModalBottomSheet(
-                  context: context,
-                  builder: (
-                    context,
-                  ) =>
-                      NoteModelBottomSheetTextStyle(
-                        textStyleNote: textStyleNote,
-                        textStyleEnumValueSetter: (value) {
-                          setState(() {
-                            textStyleNote = value;
-                          });
-                        },
-                        iconAlignNote: iconAlignNote,
-                        iconAlignEnumValueSetter: (value) {
-                          setState(() {
-                            iconAlignNote = value;
-                          });
-                        },
-                        textColor: textColor,
-                        textColorChangeValueSetter: (value) {
-                          setState(() {
-                            textColor = value;
-                          });
-                        },
-                        fontTextCurrent: listFont[indexFontText],
-                        fontTextChangeValueSetter: (value) {
-                          setState(() {
-                            indexFontText = value;
-                          });
-                        },
-                      ));
-            },
-          ),
-          NoteIcon(
-            nameIcon: PAINT_ICON,
-            callback: () {
-              _builDialogStick(context);
-            },
-          ),
+          if (isAlowEdit) ...{
+            Flexible(
+              flex: 1,
+              child: NoteIcon(
+                nameIcon: FONT_ICON,
+                callback: () {
+                  showModalBottomSheet(
+                      context: context,
+                      builder: (
+                        context,
+                      ) =>
+                          NoteModelBottomSheetTextStyle(
+                            textStyleNote: textStyleNote,
+                            textStyleEnumValueSetter: (value) {
+                              setState(() {
+                                textStyleNote = value;
+                              });
+                            },
+                            iconAlignNote: iconAlignNote,
+                            iconAlignEnumValueSetter: (value) {
+                              setState(() {
+                                iconAlignNote = value;
+                              });
+                            },
+                            textColor: textColor,
+                            textColorChangeValueSetter: (value) {
+                              setState(() {
+                                textColor = value;
+                              });
+                            },
+                            fontTextCurrent: listFont[indexFontText],
+                            fontTextChangeValueSetter: (value) {
+                              setState(() {
+                                indexFontText = value;
+                              });
+                            },
+                          ));
+                },
+              ),
+            ),
+          },
+          if (isAlowEdit) ...{
+            Flexible(
+              flex: 1,
+              child: NoteIcon(
+                nameIcon: PAINT_ICON,
+                callback: () {
+                  _builDialogStick(context);
+                },
+              ),
+            ),
+          }
         ],
       ),
     );
@@ -322,6 +354,7 @@ class _NoteAddPageState extends State<NoteAddPage> {
         Flexible(
           flex: 8,
           child: CustomTextField(
+            isEnable: isAlowEdit,
             controller: _titleTextController,
             focusNode: texttitleFocusNode,
             textColor: textColor,
@@ -350,21 +383,20 @@ class _NoteAddPageState extends State<NoteAddPage> {
   }
 
   Widget _buildBodyTextNote() {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.all(0),
-        child: CustomTextField(
-          controller: _bodyTextController,
-          focusNode: textBodyFocusNode,
-          textColor: textColor,
-          borderColor: listColors[indexColor],
-          inputType: TextInputType.multiline,
-          textAlign: iconAlignNote.textAlign,
-          fontSize: textStyleNote.sizetext,
-          isExpand: false,
-          googlefont: listFont[indexFontText],
-          isImage: 1,
-        ),
+    return Padding(
+      padding: const EdgeInsets.all(0),
+      child: CustomTextField(
+        isEnable: isAlowEdit,
+        controller: _bodyTextController,
+        focusNode: textBodyFocusNode,
+        textColor: textColor,
+        borderColor: listColors[indexColor],
+        inputType: TextInputType.multiline,
+        textAlign: iconAlignNote.textAlign,
+        fontSize: textStyleNote.sizetext,
+        isExpand: false,
+        googlefont: listFont[indexFontText],
+        isImage: 1,
       ),
     );
   }
@@ -372,55 +404,103 @@ class _NoteAddPageState extends State<NoteAddPage> {
   Widget _buidldBodyCheckListNote() {
     return Padding(
       padding: const EdgeInsets.only(right: 5, left: 5, top: 10),
-      child: Column(
-        children: [
-          ListView.builder(
-              itemCount: listItem.length,
-              itemBuilder: (context, index) {
-                return CheckboxListTile(
-                  controlAffinity: ListTileControlAffinity.leading,
-                  title: Text(listItem[index]),
-                  onChanged: (bool? value) {},
-                  value: false,
-                  secondary: IconButton(
-                    icon: const Icon(Icons.delete),
-                    iconSize: textStyleNote.sizetext + 10,
-                    onPressed: () {
-                      setState(() {
-                        listItem.removeAt(index);
-                      });
-                    },
-                  ),
-                );
-              },
-              shrinkWrap: true),
-          CheckboxListTile(
-            controlAffinity: ListTileControlAffinity.leading,
-            title: CustomTextField(
-              controller: _bodyTextController,
-              focusNode: textBodyFocusNode,
-              textColor: textColor,
-              borderColor: listColors[indexColor],
-              inputType: TextInputType.multiline,
-              textAlign: iconAlignNote.textAlign,
-              fontSize: textStyleNote.sizetext,
-              isExpand: false,
-              googlefont: listFont[indexFontText],
-              isImage: 1,
+      child: listItem.isEmpty
+          ? addCheckBox()
+          : SizedBox(
+              width: 100.w,
+              child: ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: listItem.length,
+                itemBuilder: (context, index) {
+                  return index + 1 == listItem.length
+                      ? Column(children: [
+                          checkbox(index),
+                          if (isAlowEdit) ...{addCheckBox()}
+                        ])
+                      : Column(
+                          children: [checkbox(index)],
+                        );
+                },
+              ),
             ),
-            onChanged: (bool? value) {},
-            value: false,
-            secondary: IconButton(
-              icon: const Icon(Icons.add),
+    );
+  }
+
+  CheckboxListTile checkbox(int index) {
+    return CheckboxListTile(
+      controlAffinity: ListTileControlAffinity.leading,
+      title: Text(listItem[index].text,
+          style: GoogleFonts.getFont(listFont[indexFontText],
+              fontSize: textStyleNote.sizetext, color: textColor)),
+      onChanged: (bool? value) {
+        setState(() {
+          listItem[index] = CheckListModel(
+              uuidCheckList: listItem[index].uuidCheckList,
+              text: listItem[index].text,
+              isCheck: value! ? 1 : 0);
+          _bodyCheckListController.text = "";
+
+          if (widget.isCheckEdit && !isAlowEdit) {
+            context.read<NotesBloc>().add(ChangeCheckboxNodeEvent(
+                uuid: widget.noteEdit.uuid, listCheckModel: listItem));
+          }
+        });
+      },
+      value: listItem[index].isCheck == 0 ? false : true,
+      secondary: isAlowEdit
+          ? IconButton(
+              icon: const Icon(
+                Icons.delete,
+                color: Colors.red,
+              ),
               iconSize: textStyleNote.sizetext + 10,
               onPressed: () {
                 setState(() {
-                  listItem.add('value');
+                  listItem.removeAt(index);
                 });
               },
-            ),
-          ),
-        ],
+            )
+          : const SizedBox(),
+    );
+  }
+
+  CheckboxListTile addCheckBox() {
+    return CheckboxListTile(
+      controlAffinity: ListTileControlAffinity.leading,
+      title: CustomTextField(
+        controller: _bodyCheckListController,
+        focusNode: textBodyFocusNode,
+        textColor: textColor,
+        borderColor: listColors[indexColor],
+        inputType: TextInputType.multiline,
+        textAlign: iconAlignNote.textAlign,
+        fontSize: textStyleNote.sizetext,
+        isExpand: false,
+        googlefont: listFont[indexFontText],
+        isImage: 1,
+      ),
+      onChanged: (bool? value) {
+        isCheckValue = value!;
+      },
+      value: isCheckValue,
+      secondary: IconButton(
+        icon: const Icon(Icons.add),
+        iconSize: textStyleNote.sizetext + 10,
+        onPressed: () {
+          var uuid = const Uuid();
+          setState(() {
+            if (_bodyCheckListController.text != "") {
+              listItem.add(CheckListModel(
+                  uuidCheckList: uuid.v4(),
+                  text: _bodyCheckListController.text,
+                  isCheck: isCheckValue ? 1 : 0));
+
+              isCheckValue = false;
+              _bodyCheckListController.text = "";
+            }
+          });
+        },
       ),
     );
   }

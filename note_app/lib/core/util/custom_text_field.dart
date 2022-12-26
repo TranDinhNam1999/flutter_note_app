@@ -17,6 +17,7 @@ class CustomTextField extends StatefulWidget {
   final TextAlign textAlign;
   final bool isExpand;
   final int isImage;
+  final bool isEnable;
 
   const CustomTextField(
       {super.key,
@@ -32,7 +33,8 @@ class CustomTextField extends StatefulWidget {
       this.fontWeight = FontWeight.w400,
       this.textAlign = TextAlign.center,
       this.isExpand = false,
-      this.isImage = 0});
+      this.isImage = 0,
+      this.isEnable = true});
 
   @override
   _CustomTextFieldState createState() => _CustomTextFieldState();
@@ -56,6 +58,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
     return Material(
       color: currentColor,
       child: TextField(
+        enabled: widget.isEnable,
         focusNode: widget.focusNode,
         obscureText: widget.obscureText,
         style: GoogleFonts.getFont(widget.googlefont,
@@ -72,6 +75,12 @@ class _CustomTextFieldState extends State<CustomTextField> {
           ),
           focusColor: currentColor,
           enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              width: 0,
+              color: currentColor,
+            ),
+          ),
+          disabledBorder: OutlineInputBorder(
             borderSide: BorderSide(
               width: 0,
               color: currentColor,

@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 import 'package:dartz/dartz.dart';
+import 'package:note_app/features/note/data/model/note_check_list.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/error/exceptions.dart';
 import '../model/note_model.dart';
@@ -15,6 +16,8 @@ abstract class NoteLocalDateSource {
   Future<Unit> deleteNote(String noteUuid);
   Future<Unit> updateNote(NoteModel postModel);
   Future<Unit> addNote(NoteModel postModel);
+  Future<Unit> changePinNote(String uuidCheck, int isCheck);
+  Future<Unit> chnageCheckBoxNote(String uuid, List<CheckListModel> listCheck);
 }
 
 class NoteLocalDateSourceImpl implements NoteLocalDateSource {
@@ -69,53 +72,6 @@ class NoteLocalDateSourceImpl implements NoteLocalDateSource {
 
   @override
   Future<List<NoteModel>> getCachedNote() async {
-    // var uuid = const Uuid();
-
-    // List<NoteModel> list = [
-    //   NoteModel(
-    //       body: "hehehe",
-    //       title: "nam",
-    //       uuid: uuid.v4().toString(),
-    //       isPin: 0,
-    //       indexColor: 3,
-    //       indexFont: 4,
-    //       colorText: 0xff000000,
-    //       sizeText: 30,
-    //       alignText: 'Left'),
-    //   NoteModel(
-    //       body: "hahaha hahah hahah hahah hahah hahah",
-    //       title: 'nhật gà',
-    //       uuid: uuid.v4(),
-    //       isPin: 1,
-    //       indexColor: 2,
-    //       indexFont: 4,
-    //       colorText: 0xff000000,
-    //       sizeText: 30,
-    //       alignText: 'Left'),
-    //   NoteModel(
-    //       body: "hahaha",
-    //       title: 'nhật gà',
-    //       uuid: uuid.v4(),
-    //       isPin: 1,
-    //       indexColor: 5,
-    //       indexFont: 4,
-    //       colorText: 0xff000000,
-    //       sizeText: 30,
-    //       alignText: 'Left'),
-    //   NoteModel(
-    //       body: "hahaha",
-    //       title: 'nhật gà',
-    //       uuid: uuid.v4(),
-    //       isPin: 1,
-    //       indexColor: 7,
-    //       indexFont: 4,
-    //       colorText: 0xff000000,
-    //       sizeText: 30,
-    //       alignText: 'Left')
-    // ];
-
-    // cacheNote(list);
-
     final jsonString = sharedPreferences.getString(CACHED_NOTES);
 
     if (jsonString != null) {
@@ -131,5 +87,58 @@ class NoteLocalDateSourceImpl implements NoteLocalDateSource {
     if (jsonString == null) return Future.value([]);
 
     return throw EmptyCacheException();
+  }
+
+  @override
+  Future<Unit> changePinNote(String uuid, int isPin) async {
+    final localPosts = await getCachedNote();
+
+    var noteChange = localPosts.where((element) => element.uuid == uuid).first;
+
+    final NoteModel notechangeModel = NoteModel(
+        uuid: noteChange.uuid,
+        title: noteChange.title,
+        body: noteChange.body,
+        isPin: isPin,
+        indexColor: noteChange.indexColor,
+        indexFont: noteChange.indexFont,
+        colorText: noteChange.colorText,
+        sizeText: noteChange.sizeText,
+        alignText: noteChange.alignText,
+        indexImage: noteChange.indexImage,
+        listCheck: noteChange.listCheck);
+
+    localPosts.removeWhere((element) => element.uuid == uuid);
+    localPosts.add(notechangeModel);
+
+    sharedPreferences.setString(CACHED_NOTES, json.encode(localPosts));
+    return Future.value(unit);
+  }
+
+  @override
+  Future<Unit> chnageCheckBoxNote(
+      String uuid, List<CheckListModel> listCheck) async {
+    final localPosts = await getCachedNote();
+
+    var noteChange = localPosts.where((element) => element.uuid == uuid).first;
+
+    final NoteModel notechangeModel = NoteModel(
+        uuid: noteChange.uuid,
+        title: noteChange.title,
+        body: noteChange.body,
+        isPin: noteChange.isPin,
+        indexColor: noteChange.indexColor,
+        indexFont: noteChange.indexFont,
+        colorText: noteChange.colorText,
+        sizeText: noteChange.sizeText,
+        alignText: noteChange.alignText,
+        indexImage: noteChange.indexImage,
+        listCheck: listCheck);
+
+    localPosts.removeWhere((element) => element.uuid == uuid);
+    localPosts.add(notechangeModel);
+
+    sharedPreferences.setString(CACHED_NOTES, json.encode(localPosts));
+    return Future.value(unit);
   }
 }

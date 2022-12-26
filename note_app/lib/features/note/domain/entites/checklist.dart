@@ -10,4 +10,6 @@ class CheckList extends Equatable {
 
   @override
   List<Object?> get props => [uuidCheckList, text, isCheck];
+
+  static fromJson(e) {}
 }
