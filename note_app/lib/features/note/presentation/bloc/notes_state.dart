@@ -7,7 +7,10 @@ enum NoteStatus {
   failure,
   deleteSuccess,
   addSuccess,
-  updateSuccess
+  updateSuccess,
+  newPasswordSuccess,
+  changePasswordSuccess,
+  changePasswordFailure
 }
 
 class NotesState extends Equatable {

@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 
 const primaryColor = Color.fromARGB(255, 252, 239, 227);
 const primaryAppbarColor = Color.fromARGB(255, 245, 212, 182);
+
 const secondaryColor = Color.fromARGB(255, 217, 97, 76);
 const whiteColor = Colors.white;
 const blackColor = Colors.black;
+const greenColor = Colors.green;
 
 const List<Color> listColors = [
   Color.fromARGB(255, 250, 230, 145),

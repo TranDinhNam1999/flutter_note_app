@@ -14,6 +14,7 @@ class NoteModel extends Note {
       required int sizeText,
       required String alignText,
       required int indexImage,
+      required int isPassword,
       required List<CheckListModel> listCheck})
       : super(
             uuid: uuid,
@@ -26,6 +27,7 @@ class NoteModel extends Note {
             sizeText: sizeText,
             alignText: alignText,
             indexImage: indexImage,
+            isPassword: isPassword,
             listCheck: listCheck);
 
   factory NoteModel.fromJson(Map<String, dynamic> json) {
@@ -40,6 +42,7 @@ class NoteModel extends Note {
       sizeText: json["sizeText"],
       alignText: json["alignText"],
       indexImage: json["indexImage"],
+      isPassword: json["isPassword"],
       listCheck: json['listCheck'] != null
           ? (json['listCheck'] as List)
               .map((e) => CheckListModel.fromJson(e))
@@ -60,7 +63,8 @@ class NoteModel extends Note {
       "sizeText": sizeText,
       "alignText": alignText,
       "indexImage": indexImage,
-      'listCheck':
+      "isPassword": isPassword,
+      "listCheck":
           listCheck.isNotEmpty ? listCheck.map((e) => e.toJson()).toList() : [],
     };
   }

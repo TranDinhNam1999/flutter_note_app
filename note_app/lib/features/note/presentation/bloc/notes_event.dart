@@ -60,3 +60,23 @@ class ChangeCheckboxNodeEvent extends NotesEvent {
 }
 
 class RefreshPostsEvent extends NotesEvent {}
+
+class NewPasswordNoteEvent extends NotesEvent {
+  final String newPassword;
+
+  const NewPasswordNoteEvent({required this.newPassword});
+
+  @override
+  List<Object> get props => [newPassword];
+}
+
+class ChangePasswordNoteEvent extends NotesEvent {
+  final String oldPassword;
+  final String newPassword;
+
+  const ChangePasswordNoteEvent(
+      {required this.newPassword, required this.oldPassword});
+
+  @override
+  List<Object> get props => [newPassword, oldPassword];
+}

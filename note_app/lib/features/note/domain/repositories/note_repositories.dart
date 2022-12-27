@@ -17,4 +17,7 @@ abstract class NotesRepository {
 
   Future<Either<Failure, Unit>> changeCheckBoxNote(
       String uuid, List<CheckListModel> listCheck);
+
+  Future<Either<Failure, String>> getPasswordNote();
+  Future<Either<Failure, Unit>> newPasswordNote(String newPassword);
 }

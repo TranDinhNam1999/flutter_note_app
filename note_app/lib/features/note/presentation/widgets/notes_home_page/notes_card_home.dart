@@ -23,6 +23,10 @@ class NotesCardHome extends StatelessWidget {
         CupertinoContextMenuAction(
           onPressed: () {
             Navigator.pop(context);
+            Future.delayed(const Duration(milliseconds: 500), () {
+              context.read<NotesBloc>().add(ChangePinNodeEvent(
+                  uuid: note.uuid, isPin: note.isPin == 0 ? 1 : 0));
+            });
           },
           trailingIcon: CupertinoIcons.heart,
           child: const Text('Pin'),
@@ -105,6 +109,45 @@ class NotesCardHome extends StatelessWidget {
                               )
                       ],
                     ),
+                    if (note.listCheck.isNotEmpty) ...{
+                      Expanded(
+                        child: ListView.builder(
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: note.listCheck.length,
+                          itemBuilder: (context, index) {
+                            return Column(
+                              children: [
+                                Material(
+                                  color: note.indexImage >= 0
+                                      ? listColors[note.indexColor]
+                                          .withOpacity(0)
+                                      : listColors[note.indexColor],
+                                  child: SizedBox(
+                                    height: 40,
+                                    child: CheckboxListTile(
+                                      controlAffinity:
+                                          ListTileControlAffinity.leading,
+                                      title: FittedBox(
+                                        child: Text(note.listCheck[index].text,
+                                            style: GoogleFonts.getFont(
+                                                listFont[note.indexFont],
+                                                fontSize: note.sizeText - 10,
+                                                color: Color(note.colorText))),
+                                      ),
+                                      onChanged: null,
+                                      value: note.listCheck[index].isCheck == 0
+                                          ? false
+                                          : true,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      )
+                    },
                     note.body.isNotEmpty
                         ? Expanded(
                             child: Row(

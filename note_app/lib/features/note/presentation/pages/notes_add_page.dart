@@ -36,6 +36,7 @@ class NoteAddPage extends StatefulWidget {
           sizeText: 0,
           alignText: "alignText",
           indexImage: -1,
+          isPassword: 0,
           listCheck: []),
       required this.isCheckEdit,
       this.isCheckList = false,
@@ -85,6 +86,7 @@ class _NoteAddPageState extends State<NoteAddPage> {
   late FocusNode textBodyFocusNode;
   late FocusNode texttitleFocusNode;
   late int isPin = 0;
+  late int isPassword = 0;
   late int indexColor = 0;
   late int indexImage = -1;
   late bool isNotColor = false;
@@ -167,6 +169,7 @@ class _NoteAddPageState extends State<NoteAddPage> {
                     sizeText: textStyleNote.sizetext.toInt(),
                     alignText: iconAlignNote.description,
                     indexImage: indexImage,
+                    isPassword: isPassword,
                     listCheck: listItem);
 
                 if (widget.isCheckEdit) {

@@ -33,6 +33,7 @@ class NotesRepositoryImpl implements NotesRepository {
         sizeText: note.sizeText,
         alignText: note.alignText,
         indexImage: note.indexImage,
+        isPassword: note.isPassword,
         listCheck: note.listCheck);
 
     return await _getMessage(() => localDateSource.addNote(postModel));
@@ -56,6 +57,7 @@ class NotesRepositoryImpl implements NotesRepository {
         sizeText: note.sizeText,
         alignText: note.alignText,
         indexImage: note.indexImage,
+        isPassword: note.isPassword,
         listCheck: note.listCheck);
 
     return await _getMessage(() => localDateSource.updateNote(postModel));
@@ -78,5 +80,16 @@ class NotesRepositoryImpl implements NotesRepository {
   @override
   Future<Either<Failure, Unit>> changePinNote(String uuid, int isPin) async {
     return await _getMessage(() => localDateSource.changePinNote(uuid, isPin));
+  }
+
+  @override
+  Future<Either<Failure, String>> getPasswordNote() async {
+    final localPasswordNotes = await localDateSource.getCachedPassword();
+    return Right(localPasswordNotes);
+  }
+
+  @override
+  Future<Either<Failure, Unit>> newPasswordNote(String newPassword) async {
+    return await _getMessage(() => localDateSource.newPassword(newPassword));
   }
 }

@@ -18,6 +18,7 @@ ThemeData lightTheme = ThemeData(
       primary: primaryColor,
     ),
     cardTheme: CardTheme(
+      color: primaryColor,
       shape: RoundedRectangleBorder(
         side: const BorderSide(color: Colors.white),
         borderRadius: BorderRadius.circular(12.0),
@@ -29,14 +30,15 @@ ThemeData lightTheme = ThemeData(
       backgroundColor: Color.fromARGB(255, 217, 97, 76),
       foregroundColor: secondaryColor,
     ),
+    drawerTheme: const DrawerThemeData(backgroundColor: primaryColor),
     inputDecorationTheme: InputDecorationTheme(
-      floatingLabelStyle: const TextStyle(color: primaryColor),
+      floatingLabelStyle: const TextStyle(color: greenColor),
       focusedBorder: OutlineInputBorder(
-        borderSide: const BorderSide(color: secondaryColor),
+        borderSide: const BorderSide(color: greenColor),
         borderRadius: BorderRadius.circular(12),
       ),
       border: OutlineInputBorder(
-        borderSide: const BorderSide(color: primaryColor),
+        borderSide: const BorderSide(color: greenColor),
         borderRadius: BorderRadius.circular(12),
       ),
     ),

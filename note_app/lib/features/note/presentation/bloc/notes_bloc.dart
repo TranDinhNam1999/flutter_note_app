@@ -1,12 +1,13 @@
-import 'dart:math';
-
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:note_app/features/note/data/model/note_check_list.dart';
 import 'package:note_app/features/note/domain/usecases/add_note.dart';
 import 'package:note_app/features/note/domain/usecases/change_checkbox_note.dart';
+import 'package:note_app/features/note/domain/usecases/change_password_note.dart';
 import 'package:note_app/features/note/domain/usecases/change_pin_note.dart';
 import 'package:note_app/features/note/domain/usecases/delete_note.dart';
+import 'package:note_app/features/note/domain/usecases/get_password_note.dart';
+import 'package:note_app/features/note/domain/usecases/new_password_note.dart';
 import 'package:note_app/features/note/domain/usecases/update_note.dart';
 
 import '../../domain/entites/note.dart';
@@ -22,6 +23,9 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
   final UpdateNoteUsecase updateNoteUsecase;
   final ChangePinNoteUsecase changePinNoteUsecase;
   final ChangeCheckBoxNoteUsecase changeCheckBoxNoteUsecase;
+  final GetPasswordNoteUsecase getPasswordNoteUsecase;
+  final NewPasswordNoteUsecase newPasswordNoteUsecase;
+  final ChangePasswordNoteUsecase changePasswordNoteUsecase;
 
   NotesBloc(
       {required this.getAllNotesUsecase,
@@ -29,7 +33,10 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
       required this.addNoteUsecase,
       required this.updateNoteUsecase,
       required this.changePinNoteUsecase,
-      required this.changeCheckBoxNoteUsecase})
+      required this.changeCheckBoxNoteUsecase,
+      required this.getPasswordNoteUsecase,
+      required this.newPasswordNoteUsecase,
+      required this.changePasswordNoteUsecase})
       : super(const NotesState()) {
     on<InitStateEvent>(_onInitStateEvent);
     on<GetAllNotesEvent>(_onGetAllNotesEvent);

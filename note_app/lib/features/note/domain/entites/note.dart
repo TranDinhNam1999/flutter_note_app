@@ -12,6 +12,7 @@ class Note extends Equatable {
   final int sizeText;
   final String alignText;
   final int indexImage;
+  final int isPassword;
   final List<CheckListModel> listCheck;
 
   const Note(
@@ -25,6 +26,7 @@ class Note extends Equatable {
       required this.sizeText,
       required this.alignText,
       required this.indexImage,
+      required this.isPassword,
       required this.listCheck});
 
   @override
@@ -39,6 +41,7 @@ class Note extends Equatable {
         sizeText,
         alignText,
         indexImage,
+        isPassword,
         listCheck
       ];
 }

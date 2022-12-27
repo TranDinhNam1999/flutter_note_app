@@ -1,10 +1,13 @@
 import 'package:animated_theme_switcher/animated_theme_switcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:note_app/core/theme/app_theme.dart';
 import 'package:note_app/features/note/presentation/bloc/notes_bloc.dart';
+import 'package:sizer/sizer.dart';
 import '../widgets/notes_home_page/notes_card_home.dart';
 import '../widgets/notes_home_page/notes_floating_button.dart';
+import '../widgets/notes_home_page/notes_password_dialog.dart';
 
 class NoteHomePage extends StatefulWidget {
   const NoteHomePage({super.key});
@@ -19,6 +22,38 @@ class _NoteHomePageState extends State<NoteHomePage> {
     return Scaffold(
         appBar: _buildAppbar(),
         body: _buildBody(),
+        endDrawer: Drawer(
+          child: ListView(
+            children: [
+              DrawerHeader(
+                  child: Center(
+                      child: Text(
+                'Setting Note',
+                style: GoogleFonts.roboto(
+                    fontSize: 30, fontWeight: FontWeight.w500),
+              ))),
+              GestureDetector(
+                onTap: () {
+                  _builDialogStick(context);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Row(
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Icon(Icons.lock),
+                      ),
+                      Text('Password',
+                          style: GoogleFonts.roboto(
+                              fontSize: 12.sp, fontWeight: FontWeight.w400))
+                    ],
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         floatingActionButton: const NoteFloatingBottom());
   }
@@ -64,7 +99,26 @@ class _NoteHomePageState extends State<NoteHomePage> {
         title: const Text(
           'Notes',
         ),
+        actions: [
+          setting(),
+        ],
       );
+
+  Builder setting() {
+    return Builder(
+      builder: (BuildContext context) {
+        return IconButton(
+          icon: const Icon(
+            Icons.settings,
+          ),
+          onPressed: () {
+            Scaffold.of(context).openEndDrawer();
+          },
+          tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
+        );
+      },
+    );
+  }
 
   Widget _buildBody() {
     return Padding(
@@ -86,5 +140,21 @@ class _NoteHomePageState extends State<NoteHomePage> {
         },
       ),
     );
+  }
+
+  _builDialogStick(context) {
+    return showGeneralDialog(
+        context: context,
+        pageBuilder: (ctx, a1, a2) {
+          return Container();
+        },
+        transitionBuilder: (ctx, a1, a2, child) {
+          var curve = Curves.easeInOut.transform(a1.value);
+          return Transform.scale(
+            scale: curve,
+            child: PasswordDialog(),
+          );
+        },
+        transitionDuration: const Duration(milliseconds: 300));
   }
 }

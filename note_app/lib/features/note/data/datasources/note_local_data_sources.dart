@@ -8,6 +8,7 @@ import '../../../../core/error/exceptions.dart';
 import '../model/note_model.dart';
 
 const CACHED_NOTES = "CACHED_NOTES";
+const PASSWORD_NOTES = "PASSWORD_NOTES";
 
 abstract class NoteLocalDateSource {
   Future<List<NoteModel>> getCachedNote();
@@ -18,6 +19,8 @@ abstract class NoteLocalDateSource {
   Future<Unit> addNote(NoteModel postModel);
   Future<Unit> changePinNote(String uuidCheck, int isCheck);
   Future<Unit> chnageCheckBoxNote(String uuid, List<CheckListModel> listCheck);
+  Future<String> getCachedPassword();
+  Future<Unit> newPassword(String newPassword);
 }
 
 class NoteLocalDateSourceImpl implements NoteLocalDateSource {
@@ -106,6 +109,7 @@ class NoteLocalDateSourceImpl implements NoteLocalDateSource {
         sizeText: noteChange.sizeText,
         alignText: noteChange.alignText,
         indexImage: noteChange.indexImage,
+        isPassword: noteChange.isPassword,
         listCheck: noteChange.listCheck);
 
     localPosts.removeWhere((element) => element.uuid == uuid);
@@ -133,6 +137,7 @@ class NoteLocalDateSourceImpl implements NoteLocalDateSource {
         sizeText: noteChange.sizeText,
         alignText: noteChange.alignText,
         indexImage: noteChange.indexImage,
+        isPassword: noteChange.isPassword,
         listCheck: listCheck);
 
     localPosts.removeWhere((element) => element.uuid == uuid);
@@ -140,5 +145,23 @@ class NoteLocalDateSourceImpl implements NoteLocalDateSource {
 
     sharedPreferences.setString(CACHED_NOTES, json.encode(localPosts));
     return Future.value(unit);
+  }
+
+  @override
+  Future<Unit> newPassword(String newPassword) {
+    sharedPreferences.setString(PASSWORD_NOTES, newPassword);
+    return Future.value(unit);
+  }
+
+  @override
+  Future<String> getCachedPassword() {
+    final password = sharedPreferences.getString(PASSWORD_NOTES);
+
+    if (password != null) {
+      return Future.value(password);
+    }
+    if (password == null) return Future.value("");
+
+    return throw EmptyCacheException();
   }
 }
