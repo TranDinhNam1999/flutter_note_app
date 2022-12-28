@@ -5,19 +5,21 @@ import 'package:sizer/sizer.dart';
 
 import '../../bloc/notes_bloc.dart';
 
-class PasswordDialog extends StatefulWidget {
-  const PasswordDialog({super.key});
+class ChangePasswordDialog extends StatefulWidget {
+  const ChangePasswordDialog({super.key});
 
   @override
-  State<PasswordDialog> createState() => _PasswordDialogState();
+  State<ChangePasswordDialog> createState() => _ChangePasswordDialogState();
 }
 
-class _PasswordDialogState extends State<PasswordDialog> {
+class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
+  final TextEditingController _oldPasswordController = TextEditingController();
   final TextEditingController _newPasswordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
   late bool newpasswordVisible = true;
   late bool confirmpasswordVisible = true;
+  late bool oldpasswordVisible = true;
   late String errorText = "";
 
   @override
@@ -29,6 +31,12 @@ class _PasswordDialogState extends State<PasswordDialog> {
           if (state.status == NoteStatus.changePasswordFailure) {
             errorText = "Password is not correct";
           }
+          if (state.status == NoteStatus.changePasswordInCorrectOld) {
+            errorText = "Password old is not correct";
+          }
+          if (state.status == NoteStatus.changePasswordInCorrectConfirm) {
+            errorText = "Password confirm is not correct";
+          }
           if (state.status == NoteStatus.changePasswordSuccess) {
             Navigator.pop(context);
           }
@@ -37,7 +45,7 @@ class _PasswordDialogState extends State<PasswordDialog> {
           return Container(
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(18)),
             alignment: FractionalOffset.center,
-            height: 300,
+            height: 350,
             width: 80.w,
             child: Card(
               shape: RoundedRectangleBorder(
@@ -54,11 +62,47 @@ class _PasswordDialogState extends State<PasswordDialog> {
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Text(
-                            'Password',
+                            'Change  Password',
                             style: GoogleFonts.roboto(
                                 fontSize: 14.sp, fontWeight: FontWeight.w400),
                           ),
                         )
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Flexible(
+                          child: TextField(
+                            obscuringCharacter: '*',
+                            controller: _oldPasswordController,
+                            obscureText: oldpasswordVisible,
+                            decoration: InputDecoration(
+                              hintText: "Type old password",
+                              labelText: "Type old Password",
+                              helperStyle: const TextStyle(color: Colors.green),
+                              prefixIcon: const IconButton(
+                                  icon: Icon(Icons.lock), onPressed: null),
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  oldpasswordVisible
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
+                                ),
+                                onPressed: () {
+                                  setState(
+                                    () {
+                                      oldpasswordVisible = !oldpasswordVisible;
+                                    },
+                                  );
+                                },
+                              ),
+                              alignLabelWithHint: false,
+                              filled: true,
+                            ),
+                            keyboardType: TextInputType.visiblePassword,
+                            textInputAction: TextInputAction.done,
+                          ),
+                        ),
                       ],
                     ),
                     Row(
@@ -160,10 +204,12 @@ class _PasswordDialogState extends State<PasswordDialog> {
                         ),
                         ElevatedButton(
                           onPressed: () {
-                            context.read<NotesBloc>().add(NewPasswordNoteEvent(
-                                newPassword: _newPasswordController.text,
-                                confirmPassword:
-                                    _confirmPasswordController.text));
+                            context.read<NotesBloc>().add(
+                                ChangePasswordNoteEvent(
+                                    newPassword: _newPasswordController.text,
+                                    oldPassword: _oldPasswordController.text,
+                                    confirmPassword:
+                                        _confirmPasswordController.text));
                           },
                           style: const ButtonStyle(
                               backgroundColor:

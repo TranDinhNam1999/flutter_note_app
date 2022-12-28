@@ -5,19 +5,16 @@ import 'package:sizer/sizer.dart';
 
 import '../../bloc/notes_bloc.dart';
 
-class PasswordDialog extends StatefulWidget {
-  const PasswordDialog({super.key});
+class EnterPasswordDialog extends StatefulWidget {
+  const EnterPasswordDialog({super.key});
 
   @override
-  State<PasswordDialog> createState() => _PasswordDialogState();
+  State<EnterPasswordDialog> createState() => _EnterPasswordDialogState();
 }
 
-class _PasswordDialogState extends State<PasswordDialog> {
+class _EnterPasswordDialogState extends State<EnterPasswordDialog> {
   final TextEditingController _newPasswordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
   late bool newpasswordVisible = true;
-  late bool confirmpasswordVisible = true;
   late String errorText = "";
 
   @override
@@ -37,7 +34,7 @@ class _PasswordDialogState extends State<PasswordDialog> {
           return Container(
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(18)),
             alignment: FractionalOffset.center,
-            height: 300,
+            height: 200,
             width: 80.w,
             child: Card(
               shape: RoundedRectangleBorder(
@@ -54,9 +51,9 @@ class _PasswordDialogState extends State<PasswordDialog> {
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Text(
-                            'Password',
+                            'Enter Password',
                             style: GoogleFonts.roboto(
-                                fontSize: 14.sp, fontWeight: FontWeight.w400),
+                                fontSize: 16.sp, fontWeight: FontWeight.w600),
                           ),
                         )
                       ],
@@ -66,65 +63,12 @@ class _PasswordDialogState extends State<PasswordDialog> {
                         Flexible(
                           child: TextField(
                             obscuringCharacter: '*',
+                            style: TextStyle(fontSize: 14.sp),
+                            textAlign: TextAlign.center,
                             controller: _newPasswordController,
                             obscureText: newpasswordVisible,
-                            decoration: InputDecoration(
-                              hintText: "Type new password",
-                              labelText: "Type new Password",
-                              helperStyle: const TextStyle(color: Colors.green),
-                              prefixIcon: const IconButton(
-                                  icon: Icon(Icons.lock), onPressed: null),
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  newpasswordVisible
-                                      ? Icons.visibility
-                                      : Icons.visibility_off,
-                                ),
-                                onPressed: () {
-                                  setState(
-                                    () {
-                                      newpasswordVisible = !newpasswordVisible;
-                                    },
-                                  );
-                                },
-                              ),
-                              alignLabelWithHint: false,
-                              filled: true,
-                            ),
-                            keyboardType: TextInputType.visiblePassword,
-                            textInputAction: TextInputAction.done,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Flexible(
-                          child: TextField(
-                            obscuringCharacter: '*',
-                            controller: _confirmPasswordController,
-                            obscureText: confirmpasswordVisible,
-                            decoration: InputDecoration(
-                              hintText: "Confirm password",
-                              labelText: "Confirm Password",
-                              helperStyle: const TextStyle(color: Colors.green),
-                              prefixIcon: const IconButton(
-                                  icon: Icon(Icons.lock), onPressed: null),
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  confirmpasswordVisible
-                                      ? Icons.visibility
-                                      : Icons.visibility_off,
-                                ),
-                                onPressed: () {
-                                  setState(
-                                    () {
-                                      confirmpasswordVisible =
-                                          !confirmpasswordVisible;
-                                    },
-                                  );
-                                },
-                              ),
+                            decoration: const InputDecoration(
+                              helperStyle: TextStyle(color: Colors.green),
                               alignLabelWithHint: false,
                               filled: true,
                             ),
@@ -160,10 +104,10 @@ class _PasswordDialogState extends State<PasswordDialog> {
                         ),
                         ElevatedButton(
                           onPressed: () {
-                            context.read<NotesBloc>().add(NewPasswordNoteEvent(
-                                newPassword: _newPasswordController.text,
-                                confirmPassword:
-                                    _confirmPasswordController.text));
+                            // context.read<NotesBloc>().add(NewPasswordNoteEvent(
+                            //     newPassword: _newPasswordController.text,
+                            //     confirmPassword:
+                            //         _confirmPasswordController.text));
                           },
                           style: const ButtonStyle(
                               backgroundColor:

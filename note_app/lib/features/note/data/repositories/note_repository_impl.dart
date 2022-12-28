@@ -92,4 +92,11 @@ class NotesRepositoryImpl implements NotesRepository {
   Future<Either<Failure, Unit>> newPasswordNote(String newPassword) async {
     return await _getMessage(() => localDateSource.newPassword(newPassword));
   }
+
+  @override
+  Future<Either<Failure, Unit>> changeIsPasswordNote(
+      String uuid, int isPassword) async {
+    return await _getMessage(
+        () => localDateSource.changeIsPasswordNote(uuid, isPassword));
+  }
 }

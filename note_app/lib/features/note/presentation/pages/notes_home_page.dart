@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:note_app/core/theme/app_theme.dart';
 import 'package:note_app/features/note/presentation/bloc/notes_bloc.dart';
+import 'package:note_app/features/note/presentation/widgets/notes_home_page/notes_change_password_dialog.dart';
 import 'package:sizer/sizer.dart';
 import '../widgets/notes_home_page/notes_card_home.dart';
 import '../widgets/notes_home_page/notes_floating_button.dart';
@@ -22,38 +23,7 @@ class _NoteHomePageState extends State<NoteHomePage> {
     return Scaffold(
         appBar: _buildAppbar(),
         body: _buildBody(),
-        endDrawer: Drawer(
-          child: ListView(
-            children: [
-              DrawerHeader(
-                  child: Center(
-                      child: Text(
-                'Setting Note',
-                style: GoogleFonts.roboto(
-                    fontSize: 30, fontWeight: FontWeight.w500),
-              ))),
-              GestureDetector(
-                onTap: () {
-                  _builDialogStick(context);
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Row(
-                    children: [
-                      const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Icon(Icons.lock),
-                      ),
-                      Text('Password',
-                          style: GoogleFonts.roboto(
-                              fontSize: 12.sp, fontWeight: FontWeight.w400))
-                    ],
-                  ),
-                ),
-              )
-            ],
-          ),
-        ),
+        endDrawer: _builDrawer(context),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         floatingActionButton: const NoteFloatingBottom());
   }
@@ -142,7 +112,7 @@ class _NoteHomePageState extends State<NoteHomePage> {
     );
   }
 
-  _builDialogStick(context) {
+  _builDialogStick(context, Widget widgetChild) {
     return showGeneralDialog(
         context: context,
         pageBuilder: (ctx, a1, a2) {
@@ -152,9 +122,55 @@ class _NoteHomePageState extends State<NoteHomePage> {
           var curve = Curves.easeInOut.transform(a1.value);
           return Transform.scale(
             scale: curve,
-            child: PasswordDialog(),
+            child: widgetChild,
           );
         },
         transitionDuration: const Duration(milliseconds: 300));
   }
+
+  Drawer _builDrawer(BuildContext context) => Drawer(
+        child: ListView(
+          children: [
+            DrawerHeader(
+                child: Center(
+                    child: Text(
+              'Setting Note',
+              style:
+                  GoogleFonts.roboto(fontSize: 30, fontWeight: FontWeight.w500),
+            ))),
+            BlocConsumer<NotesBloc, NotesState>(
+              listener: (context, state) {},
+              builder: (context, state) {
+                late String textpassword = "Password";
+                if (state.isPassword) {
+                  textpassword = "Change Password";
+                }
+                return GestureDetector(
+                  onTap: () {
+                    if (state.isPassword) {
+                      _builDialogStick(context, const ChangePasswordDialog());
+                    } else {
+                      _builDialogStick(context, const PasswordDialog());
+                    }
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Row(
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Icon(Icons.lock),
+                        ),
+                        Text(textpassword,
+                            style: GoogleFonts.roboto(
+                                fontSize: 12.sp, fontWeight: FontWeight.w400))
+                      ],
+                    ),
+                  ),
+                );
+              },
+            )
+          ],
+        ),
+      );
 }

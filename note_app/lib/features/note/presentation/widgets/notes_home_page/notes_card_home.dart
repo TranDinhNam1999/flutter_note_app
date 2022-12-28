@@ -11,6 +11,7 @@ import '../../../../../core/theme/app_color.dart';
 import '../../../../../core/theme/app_image.dart';
 import '../../../domain/entites/note.dart';
 import '../../pages/notes_add_page.dart';
+import 'notes_enter_password_dialog.dart';
 
 class NotesCardHome extends StatelessWidget {
   const NotesCardHome({super.key, required this.note});
@@ -28,8 +29,19 @@ class NotesCardHome extends StatelessWidget {
                   uuid: note.uuid, isPin: note.isPin == 0 ? 1 : 0));
             });
           },
-          trailingIcon: CupertinoIcons.heart,
-          child: const Text('Pin'),
+          trailingIcon: CupertinoIcons.pin,
+          child: Text(note.isPin == 0 ? 'Pin' : 'UnPin'),
+        ),
+        CupertinoContextMenuAction(
+          onPressed: () {
+            Navigator.pop(context);
+            Future.delayed(const Duration(milliseconds: 500), () {
+              context.read<NotesBloc>().add(ChangeIsPasswordNoteEvent(
+                  uuid: note.uuid, isPassword: note.isPassword == 0 ? 1 : 0));
+            });
+          },
+          trailingIcon: CupertinoIcons.lock,
+          child: Text(note.isPassword == 0 ? 'Lock' : 'UnLock'),
         ),
         CupertinoContextMenuAction(
           onPressed: () {
@@ -45,15 +57,19 @@ class NotesCardHome extends StatelessWidget {
       ],
       child: GestureDetector(
         onTap: (() {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => NoteAddPage(
-                      isCheckEdit: true,
-                      noteEdit: note,
-                      heroTag: note.uuid,
-                    )),
-          );
+          if (note.isPassword == 1) {
+            _builDialogStick(context, const EnterPasswordDialog());
+          } else {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => NoteAddPage(
+                        isCheckEdit: true,
+                        noteEdit: note,
+                        heroTag: note.uuid,
+                      )),
+            );
+          }
         }),
         child: Stack(
           children: [
@@ -170,6 +186,19 @@ class NotesCardHome extends StatelessWidget {
                 ),
               ),
             ),
+            if (note.isPassword == 1) ...{
+              Container(
+                decoration: BoxDecoration(
+                  color: listColors[note.indexColor].withOpacity(0.98),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Center(
+                    child: Image.asset(
+                  LOCK_ICON,
+                  fit: BoxFit.contain,
+                )),
+              )
+            }
           ],
         ),
       ),
@@ -181,5 +210,21 @@ class NotesCardHome extends StatelessWidget {
     if (textAlign == "Right") return MainAxisAlignment.spaceAround;
 
     return MainAxisAlignment.center;
+  }
+
+  _builDialogStick(context, Widget widgetChild) {
+    return showGeneralDialog(
+        context: context,
+        pageBuilder: (ctx, a1, a2) {
+          return Container();
+        },
+        transitionBuilder: (ctx, a1, a2, child) {
+          var curve = Curves.easeInOut.transform(a1.value);
+          return Transform.scale(
+            scale: curve,
+            child: widgetChild,
+          );
+        },
+        transitionDuration: const Duration(milliseconds: 300));
   }
 }

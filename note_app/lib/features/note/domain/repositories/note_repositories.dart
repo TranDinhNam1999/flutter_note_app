@@ -20,4 +20,6 @@ abstract class NotesRepository {
 
   Future<Either<Failure, String>> getPasswordNote();
   Future<Either<Failure, Unit>> newPasswordNote(String newPassword);
+  Future<Either<Failure, Unit>> changeIsPasswordNote(
+      String uuid, int isPassword);
 }

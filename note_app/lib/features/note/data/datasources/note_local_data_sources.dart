@@ -21,6 +21,7 @@ abstract class NoteLocalDateSource {
   Future<Unit> chnageCheckBoxNote(String uuid, List<CheckListModel> listCheck);
   Future<String> getCachedPassword();
   Future<Unit> newPassword(String newPassword);
+  Future<Unit> changeIsPasswordNote(String uuid, int isPassword);
 }
 
 class NoteLocalDateSourceImpl implements NoteLocalDateSource {
@@ -163,5 +164,32 @@ class NoteLocalDateSourceImpl implements NoteLocalDateSource {
     if (password == null) return Future.value("");
 
     return throw EmptyCacheException();
+  }
+
+  @override
+  Future<Unit> changeIsPasswordNote(String uuid, int isPassword) async {
+    final localPosts = await getCachedNote();
+
+    var noteChange = localPosts.where((element) => element.uuid == uuid).first;
+
+    final NoteModel notechangeModel = NoteModel(
+        uuid: noteChange.uuid,
+        title: noteChange.title,
+        body: noteChange.body,
+        isPin: noteChange.isPin,
+        indexColor: noteChange.indexColor,
+        indexFont: noteChange.indexFont,
+        colorText: noteChange.colorText,
+        sizeText: noteChange.sizeText,
+        alignText: noteChange.alignText,
+        indexImage: noteChange.indexImage,
+        isPassword: isPassword,
+        listCheck: noteChange.listCheck);
+
+    localPosts.removeWhere((element) => element.uuid == uuid);
+    localPosts.add(notechangeModel);
+
+    sharedPreferences.setString(CACHED_NOTES, json.encode(localPosts));
+    return Future.value(unit);
   }
 }

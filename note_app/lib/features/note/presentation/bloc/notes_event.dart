@@ -63,8 +63,10 @@ class RefreshPostsEvent extends NotesEvent {}
 
 class NewPasswordNoteEvent extends NotesEvent {
   final String newPassword;
+  final String confirmPassword;
 
-  const NewPasswordNoteEvent({required this.newPassword});
+  const NewPasswordNoteEvent(
+      {required this.newPassword, required this.confirmPassword});
 
   @override
   List<Object> get props => [newPassword];
@@ -73,10 +75,38 @@ class NewPasswordNoteEvent extends NotesEvent {
 class ChangePasswordNoteEvent extends NotesEvent {
   final String oldPassword;
   final String newPassword;
+  final String confirmPassword;
 
   const ChangePasswordNoteEvent(
-      {required this.newPassword, required this.oldPassword});
+      {required this.newPassword,
+      required this.oldPassword,
+      required this.confirmPassword});
 
   @override
-  List<Object> get props => [newPassword, oldPassword];
+  List<Object> get props => [newPassword, oldPassword, confirmPassword];
+}
+
+class GetPasswordNoteEvent extends NotesEvent {
+  const GetPasswordNoteEvent();
+
+  @override
+  List<Object> get props => [];
+}
+
+class ChangeIsPasswordNoteEvent extends NotesEvent {
+  const ChangeIsPasswordNoteEvent(
+      {required this.isPassword, required this.uuid});
+  final int isPassword;
+  final String uuid;
+
+  @override
+  List<Object> get props => [];
+}
+
+class EnterPasswordNoteEvent extends NotesEvent {
+  const EnterPasswordNoteEvent({required this.password});
+  final String password;
+
+  @override
+  List<Object> get props => [password];
 }
