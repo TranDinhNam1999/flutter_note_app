@@ -11,3 +11,4 @@ const TRASH_ICON = 'assets/icon/trash.png';
 const UNPIN_ICON = 'assets/icon/unpin.png';
 const KEYBOARD_ICON = 'assets/icon/keyboard.png';
 const LOCK_ICON = 'assets/icon/lock.png';
+const UNLOCK_ICON = 'assets/icon/unlocked.png';

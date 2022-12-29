@@ -210,7 +210,12 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
         isPassword: state.isPassword));
 
     try {
-      if (event.newPassword != event.confirmPassword) {
+      if (event.newPassword == "") {
+        emit(state.copyWith(
+            status: NoteStatus.changePasswordIsNotNullorEmpty,
+            notes: state.notes,
+            isPassword: state.isPassword));
+      } else if (event.newPassword != event.confirmPassword) {
         emit(state.copyWith(
             status: NoteStatus.changePasswordFailure,
             notes: state.notes,
@@ -242,7 +247,12 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
       var checkPassword = await getPasswordNoteUsecase();
       var oldPassword = checkPassword.fold(((l) => null), (r) => r);
 
-      if (event.oldPassword != oldPassword) {
+      if (event.newPassword == "") {
+        emit(state.copyWith(
+            status: NoteStatus.changePasswordIsNotNullorEmpty,
+            notes: state.notes,
+            isPassword: state.isPassword));
+      } else if (event.oldPassword != oldPassword) {
         emit(state.copyWith(
             status: NoteStatus.changePasswordInCorrectOld,
             notes: state.notes,
@@ -276,12 +286,20 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
         isPassword: state.isPassword));
 
     try {
-      await changeIsPasswordNoteUsecase(event.uuid, event.isPassword);
+      var checkPassword = await getPasswordNoteUsecase();
+      var isPassword = checkPassword.fold(((l) => null), (r) => r);
 
-      var data = await getAllNotesUsecase();
-      emit(state.copyWith(
-          status: NoteStatus.updateSuccess,
-          notes: data.fold(((l) => null), (r) => r)));
+      if (isPassword == "") {
+        emit(state.copyWith(
+            status: NoteStatus.passwordIsNoTConfigured, notes: state.notes));
+      } else {
+        await changeIsPasswordNoteUsecase(event.uuid, event.isPassword);
+
+        var data = await getAllNotesUsecase();
+        emit(state.copyWith(
+            status: NoteStatus.updateSuccess,
+            notes: data.fold(((l) => null), (r) => r)));
+      }
     } catch (e) {
       emit(state.copyWith(
           status: NoteStatus.failure,

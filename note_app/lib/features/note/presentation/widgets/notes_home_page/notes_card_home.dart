@@ -58,7 +58,7 @@ class NotesCardHome extends StatelessWidget {
       child: GestureDetector(
         onTap: (() {
           if (note.isPassword == 1) {
-            _builDialogStick(context, const EnterPasswordDialog());
+            _builDialogStick(context, EnterPasswordDialog(note: note));
           } else {
             Navigator.push(
               context,
@@ -73,16 +73,7 @@ class NotesCardHome extends StatelessWidget {
         }),
         child: Stack(
           children: [
-            if (note.indexImage >= 0) ...{
-              ClipRRect(
-                borderRadius: BorderRadius.circular(12.0),
-                child: SvgPicture.asset(
-                  listImage[note.indexImage],
-                  alignment: Alignment.center,
-                  fit: BoxFit.fill,
-                ),
-              )
-            },
+            if (note.indexImage >= 0) ...{_buildBackgroundImage()},
             Container(
               decoration: BoxDecoration(
                 color: note.indexImage >= 0
@@ -96,114 +87,120 @@ class NotesCardHome extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        note.title.isNotEmpty
-                            ? Flexible(
-                                flex: 8,
-                                child: FittedBox(
-                                  child: Text(note.title,
-                                      style: GoogleFonts.getFont(
-                                          listFont[note.indexFont],
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w700,
-                                          color: Color(note.colorText))),
-                                ),
-                              )
-                            : const Flexible(flex: 8, child: Text('')),
-                        (note.isPin == 0)
-                            ? const SizedBox(
-                                width: 0,
-                                height: 0,
-                              )
-                            : Flexible(
-                                flex: 2,
-                                child: Image.asset(
-                                  PIN_ICON,
-                                ),
-                              )
-                      ],
-                    ),
+                    _buildTitleBodyCard(),
                     if (note.listCheck.isNotEmpty) ...{
-                      Expanded(
-                        child: ListView.builder(
-                          physics: const NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: note.listCheck.length,
-                          itemBuilder: (context, index) {
-                            return Column(
-                              children: [
-                                Material(
-                                  color: note.indexImage >= 0
-                                      ? listColors[note.indexColor]
-                                          .withOpacity(0)
-                                      : listColors[note.indexColor],
-                                  child: SizedBox(
-                                    height: 40,
-                                    child: CheckboxListTile(
-                                      controlAffinity:
-                                          ListTileControlAffinity.leading,
-                                      title: FittedBox(
-                                        child: Text(note.listCheck[index].text,
-                                            style: GoogleFonts.getFont(
-                                                listFont[note.indexFont],
-                                                fontSize: note.sizeText - 10,
-                                                color: Color(note.colorText))),
-                                      ),
-                                      onChanged: null,
-                                      value: note.listCheck[index].isCheck == 0
-                                          ? false
-                                          : true,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            );
-                          },
-                        ),
-                      )
+                      _buildBodyListCheckCard()
                     },
-                    note.body.isNotEmpty
-                        ? Expanded(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Expanded(
-                                  child: FittedBox(
-                                    child: Text(note.body,
-                                        style: GoogleFonts.getFont(
-                                            listFont[note.indexFont],
-                                            fontWeight: FontWeight.w500,
-                                            color: Color(note.colorText))),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          )
-                        : const Text(''),
+                    if (note.body.isNotEmpty) ...{_buildBodyTextCard()},
                   ],
                 ),
               ),
             ),
-            if (note.isPassword == 1) ...{
-              Container(
-                decoration: BoxDecoration(
-                  color: listColors[note.indexColor].withOpacity(0.98),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Center(
-                    child: Image.asset(
-                  LOCK_ICON,
-                  fit: BoxFit.contain,
-                )),
-              )
-            }
+            if (note.isPassword == 1) ...{_buildBackgroundLock()}
           ],
         ),
       ),
     );
   }
+
+  Widget _buildBodyTextCard() => Expanded(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(
+              child: FittedBox(
+                child: Text(note.body,
+                    style: GoogleFonts.getFont(listFont[note.indexFont],
+                        fontWeight: FontWeight.w500,
+                        color: Color(note.colorText))),
+              ),
+            ),
+          ],
+        ),
+      );
+
+  Widget _buildBodyListCheckCard() => Expanded(
+        child: ListView.builder(
+          physics: const NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          itemCount: note.listCheck.length,
+          itemBuilder: (context, index) {
+            return Column(
+              children: [
+                Material(
+                  color: note.indexImage >= 0
+                      ? listColors[note.indexColor].withOpacity(0)
+                      : listColors[note.indexColor],
+                  child: SizedBox(
+                    height: 40,
+                    child: CheckboxListTile(
+                      controlAffinity: ListTileControlAffinity.leading,
+                      title: FittedBox(
+                        child: Text(note.listCheck[index].text,
+                            style: GoogleFonts.getFont(listFont[note.indexFont],
+                                fontSize: note.sizeText - 10,
+                                color: Color(note.colorText))),
+                      ),
+                      onChanged: null,
+                      value: note.listCheck[index].isCheck == 0 ? false : true,
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      );
+
+  Widget _buildTitleBodyCard() => Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          note.title.isNotEmpty
+              ? Flexible(
+                  flex: 8,
+                  child: FittedBox(
+                    child: Text(note.title,
+                        style: GoogleFonts.getFont(listFont[note.indexFont],
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                            color: Color(note.colorText))),
+                  ),
+                )
+              : const Flexible(flex: 8, child: Text('')),
+          (note.isPin == 0)
+              ? const SizedBox(
+                  width: 0,
+                  height: 0,
+                )
+              : Flexible(
+                  flex: 2,
+                  child: Image.asset(
+                    PIN_ICON,
+                  ),
+                )
+        ],
+      );
+
+  Widget _buildBackgroundImage() => ClipRRect(
+        borderRadius: BorderRadius.circular(12.0),
+        child: SvgPicture.asset(
+          listImage[note.indexImage],
+          alignment: Alignment.center,
+          fit: BoxFit.fill,
+        ),
+      );
+
+  Widget _buildBackgroundLock() => Container(
+        decoration: BoxDecoration(
+          color: listColors[note.indexColor].withOpacity(0.98),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Center(
+            child: Image.asset(
+          LOCK_ICON,
+          fit: BoxFit.contain,
+        )),
+      );
 
   MainAxisAlignment getTextAlign(String textAlign) {
     if (textAlign == "Left") return MainAxisAlignment.start;

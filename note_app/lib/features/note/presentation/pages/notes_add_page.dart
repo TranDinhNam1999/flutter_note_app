@@ -18,6 +18,7 @@ import '../bloc/notes_bloc.dart';
 import '../widgets/notes_add_page/notes_icon.dart';
 import '../widgets/notes_add_page/notes_model_bottom_sheet_text_style.dart';
 import '../widgets/notes_add_page/notes_stick_dialog.dart';
+import '../widgets/notes_home_page/notes_password_dialog.dart';
 
 // ignore: must_be_immutable
 class NoteAddPage extends StatefulWidget {
@@ -101,6 +102,7 @@ class _NoteAddPageState extends State<NoteAddPage> {
     super.initState();
     if (widget.isCheckEdit) {
       isPin = widget.noteEdit.isPin;
+      isPassword = widget.noteEdit.isPassword;
       _titleTextController.text = widget.noteEdit.title;
       _bodyTextController.text = widget.noteEdit.body;
       textColor = Color(widget.noteEdit.colorText);
@@ -291,6 +293,42 @@ class _NoteAddPageState extends State<NoteAddPage> {
               },
             ),
           ),
+          if (widget.isCheckEdit) ...{
+            Flexible(
+              flex: 1,
+              child: BlocConsumer<NotesBloc, NotesState>(
+                listener: (context, state) {
+                  if (state.status == NoteStatus.passwordIsNoTConfigured) {
+                    _builDialogStick(context, const PasswordDialog());
+                  }
+                  if (state.status == NoteStatus.changePasswordSuccess) {
+                    context.read<NotesBloc>().add(ChangeIsPasswordNoteEvent(
+                        isPassword: isPassword, uuid: widget.noteEdit.uuid));
+                  }
+                },
+                builder: (context, state) {
+                  return NoteIcon(
+                    nameIcon: isPassword == 0 ? UNLOCK_ICON : LOCK_ICON,
+                    callback: () {
+                      setState(() {
+                        if (isPassword == 0) {
+                          isPassword = 1;
+                        } else {
+                          isPassword = 0;
+                        }
+                        if (widget.isCheckEdit) {
+                          context.read<NotesBloc>().add(
+                              ChangeIsPasswordNoteEvent(
+                                  isPassword: isPassword,
+                                  uuid: widget.noteEdit.uuid));
+                        }
+                      });
+                    },
+                  );
+                },
+              ),
+            ),
+          },
           if (isAlowEdit) ...{
             Flexible(
               flex: 1,
@@ -338,7 +376,23 @@ class _NoteAddPageState extends State<NoteAddPage> {
               child: NoteIcon(
                 nameIcon: PAINT_ICON,
                 callback: () {
-                  _builDialogStick(context);
+                  _builDialogStick(
+                      context,
+                      NoteStickDialog(
+                        indexColorValueSetter: ((value) {
+                          setState(() {
+                            indexColor = value;
+                            indexImage = -1;
+                            isNotColor = false;
+                          });
+                        }),
+                        indexImageValueSetter: ((value) {
+                          setState(() {
+                            indexImage = value;
+                            isNotColor = true;
+                          });
+                        }),
+                      ));
                 },
               ),
             ),
@@ -506,7 +560,7 @@ class _NoteAddPageState extends State<NoteAddPage> {
     );
   }
 
-  _builDialogStick(context) {
+  _builDialogStick(context, Widget currentWidget) {
     return showGeneralDialog(
         context: context,
         pageBuilder: (ctx, a1, a2) {
@@ -516,21 +570,7 @@ class _NoteAddPageState extends State<NoteAddPage> {
           var curve = Curves.easeInOut.transform(a1.value);
           return Transform.scale(
             scale: curve,
-            child: NoteStickDialog(
-              indexColorValueSetter: ((value) {
-                setState(() {
-                  indexColor = value;
-                  indexImage = -1;
-                  isNotColor = false;
-                });
-              }),
-              indexImageValueSetter: ((value) {
-                setState(() {
-                  indexImage = value;
-                  isNotColor = true;
-                });
-              }),
-            ),
+            child: currentWidget,
           );
         },
         transitionDuration: const Duration(milliseconds: 300));
