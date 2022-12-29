@@ -105,7 +105,10 @@ class _NoteHomePageState extends State<NoteHomePage> {
               itemBuilder: (BuildContext context, int index) {
                 return state.notes == null
                     ? const SizedBox()
-                    : NotesCardHome(note: state.notes![index]);
+                    : NotesCardHome(
+                        note: state.notes![index],
+                        isPassword: state.isPassword,
+                      );
               });
         },
       ),

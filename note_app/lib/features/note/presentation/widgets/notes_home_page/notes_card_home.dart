@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,7 +8,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:note_app/core/string/icons.dart';
 import 'package:note_app/core/theme/app_font.dart';
 import 'package:note_app/features/note/presentation/bloc/notes_bloc.dart';
-
 import '../../../../../core/theme/app_color.dart';
 import '../../../../../core/theme/app_image.dart';
 import '../../../domain/entites/note.dart';
@@ -14,8 +15,10 @@ import '../../pages/notes_add_page.dart';
 import 'notes_enter_password_dialog.dart';
 
 class NotesCardHome extends StatelessWidget {
-  const NotesCardHome({super.key, required this.note});
+  const NotesCardHome(
+      {super.key, required this.note, required this.isPassword});
   final Note note;
+  final bool isPassword;
 
   @override
   Widget build(BuildContext context) {
@@ -32,17 +35,19 @@ class NotesCardHome extends StatelessWidget {
           trailingIcon: CupertinoIcons.pin,
           child: Text(note.isPin == 0 ? 'Pin' : 'UnPin'),
         ),
-        CupertinoContextMenuAction(
-          onPressed: () {
-            Navigator.pop(context);
-            Future.delayed(const Duration(milliseconds: 500), () {
-              context.read<NotesBloc>().add(ChangeIsPasswordNoteEvent(
-                  uuid: note.uuid, isPassword: note.isPassword == 0 ? 1 : 0));
-            });
-          },
-          trailingIcon: CupertinoIcons.lock,
-          child: Text(note.isPassword == 0 ? 'Lock' : 'UnLock'),
-        ),
+        if (isPassword) ...{
+          CupertinoContextMenuAction(
+            onPressed: () {
+              Navigator.pop(context);
+              Future.delayed(const Duration(milliseconds: 500), () {
+                context.read<NotesBloc>().add(ChangeIsPasswordNoteEvent(
+                    uuid: note.uuid, isPassword: note.isPassword == 0 ? 1 : 0));
+              });
+            },
+            trailingIcon: CupertinoIcons.lock,
+            child: Text(note.isPassword == 0 ? 'Lock' : 'UnLock'),
+          )
+        },
         CupertinoContextMenuAction(
           onPressed: () {
             Navigator.pop(context);

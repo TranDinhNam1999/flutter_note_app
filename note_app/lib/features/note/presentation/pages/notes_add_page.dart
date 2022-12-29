@@ -217,7 +217,6 @@ class _NoteAddPageState extends State<NoteAddPage> {
       child: SingleChildScrollView(
           controller: _scrollController,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -438,21 +437,18 @@ class _NoteAddPageState extends State<NoteAddPage> {
   }
 
   Widget _buildBodyTextNote() {
-    return Padding(
-      padding: const EdgeInsets.all(0),
-      child: CustomTextField(
-        isEnable: isAlowEdit,
-        controller: _bodyTextController,
-        focusNode: textBodyFocusNode,
-        textColor: textColor,
-        borderColor: listColors[indexColor],
-        inputType: TextInputType.multiline,
-        textAlign: iconAlignNote.textAlign,
-        fontSize: textStyleNote.sizetext,
-        isExpand: false,
-        googlefont: listFont[indexFontText],
-        isImage: 1,
-      ),
+    return CustomTextField(
+      isEnable: isAlowEdit,
+      controller: _bodyTextController,
+      focusNode: textBodyFocusNode,
+      textColor: textColor,
+      borderColor: listColors[indexColor],
+      inputType: TextInputType.multiline,
+      textAlign: iconAlignNote.textAlign,
+      fontSize: textStyleNote.sizetext,
+      isExpand: false,
+      googlefont: listFont[indexFontText],
+      isImage: 1,
     );
   }
 
