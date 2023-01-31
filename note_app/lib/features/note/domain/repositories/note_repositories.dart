@@ -22,4 +22,7 @@ abstract class NotesRepository {
   Future<Either<Failure, Unit>> newPasswordNote(String newPassword);
   Future<Either<Failure, Unit>> changeIsPasswordNote(
       String uuid, int isPassword);
+
+  Future<Either<Failure, String>> getCheckIntro();
+  Future<Either<Failure, Unit>> addCheckIntro();
 }

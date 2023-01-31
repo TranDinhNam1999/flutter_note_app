@@ -1,7 +1,9 @@
+import 'package:note_app/features/note/domain/usecases/add_check_intro.dart';
 import 'package:note_app/features/note/domain/usecases/change_checkbox_note.dart';
 import 'package:note_app/features/note/domain/usecases/change_is_password_note.dart';
 import 'package:note_app/features/note/domain/usecases/change_password_note.dart';
 import 'package:note_app/features/note/domain/usecases/change_pin_note.dart';
+import 'package:note_app/features/note/domain/usecases/get_check_intro.dart';
 import 'package:note_app/features/note/domain/usecases/get_password_note.dart';
 import 'package:note_app/features/note/domain/usecases/new_password_note.dart';
 import 'package:note_app/features/note/presentation/bloc/notes_bloc.dart';
@@ -37,7 +39,9 @@ Future<void> init() async {
       getPasswordNoteUsecase: sl(),
       newPasswordNoteUsecase: sl(),
       changePasswordNoteUsecase: sl(),
-      changeIsPasswordNoteUsecase: sl()));
+      changeIsPasswordNoteUsecase: sl(),
+      addCheckIntroUsecase: sl(),
+      getCheckIntroUsecase: sl()));
 
   // Usecases
   sl.registerLazySingleton(() => AddNoteUsecase(sl()));
@@ -50,6 +54,8 @@ Future<void> init() async {
   sl.registerLazySingleton(() => NewPasswordNoteUsecase(sl()));
   sl.registerLazySingleton(() => ChangePasswordNoteUsecase(sl()));
   sl.registerLazySingleton(() => ChangeIsPasswordNoteUsecase(sl()));
+  sl.registerLazySingleton(() => AddCheckIntroUsecase(sl()));
+  sl.registerLazySingleton(() => GetCheckIntroUsecase(sl()));
 
   // Repository
   sl.registerLazySingleton<NotesRepository>(

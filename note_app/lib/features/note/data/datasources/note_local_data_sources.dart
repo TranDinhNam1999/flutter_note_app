@@ -9,10 +9,10 @@ import '../model/note_model.dart';
 
 const CACHED_NOTES = "CACHED_NOTES";
 const PASSWORD_NOTES = "PASSWORD_NOTES";
+const CHECK_INTRO = "CHECK_INTRO";
 
 abstract class NoteLocalDateSource {
   Future<List<NoteModel>> getCachedNote();
-
   Future<Unit> cacheNote(List<NoteModel> postModel);
   Future<Unit> deleteNote(String noteUuid);
   Future<Unit> updateNote(NoteModel postModel);
@@ -22,6 +22,8 @@ abstract class NoteLocalDateSource {
   Future<String> getCachedPassword();
   Future<Unit> newPassword(String newPassword);
   Future<Unit> changeIsPasswordNote(String uuid, int isPassword);
+  Future<Unit> cacheIntro(String check);
+  Future<String> getIntro();
 }
 
 class NoteLocalDateSourceImpl implements NoteLocalDateSource {
@@ -191,5 +193,24 @@ class NoteLocalDateSourceImpl implements NoteLocalDateSource {
 
     sharedPreferences.setString(CACHED_NOTES, json.encode(localPosts));
     return Future.value(unit);
+  }
+
+  @override
+  Future<Unit> cacheIntro(String check) {
+    sharedPreferences.setString(CHECK_INTRO, check);
+
+    return Future.value(unit);
+  }
+
+  @override
+  Future<String> getIntro() {
+    final checkIntro = sharedPreferences.getString(CHECK_INTRO);
+
+    if (checkIntro != null) {
+      return Future.value(checkIntro);
+    }
+    if (checkIntro == null) return Future.value("");
+
+    return throw EmptyCacheException();
   }
 }

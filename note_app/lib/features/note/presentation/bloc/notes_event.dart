@@ -110,3 +110,17 @@ class EnterPasswordNoteEvent extends NotesEvent {
   @override
   List<Object> get props => [password];
 }
+
+class CheckIntroEvent extends NotesEvent {
+  const CheckIntroEvent();
+
+  @override
+  List<Object> get props => [];
+}
+
+class AddCheckIntroEvent extends NotesEvent {
+  const AddCheckIntroEvent();
+
+  @override
+  List<Object> get props => [];
+}

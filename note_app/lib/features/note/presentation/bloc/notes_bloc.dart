@@ -11,8 +11,10 @@ import 'package:note_app/features/note/domain/usecases/new_password_note.dart';
 import 'package:note_app/features/note/domain/usecases/update_note.dart';
 
 import '../../domain/entites/note.dart';
+import '../../domain/usecases/add_check_intro.dart';
 import '../../domain/usecases/change_is_password_note.dart';
 import '../../domain/usecases/get_all_note.dart';
+import '../../domain/usecases/get_check_intro.dart';
 
 part 'notes_event.dart';
 part 'notes_state.dart';
@@ -28,6 +30,8 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
   final NewPasswordNoteUsecase newPasswordNoteUsecase;
   final ChangePasswordNoteUsecase changePasswordNoteUsecase;
   final ChangeIsPasswordNoteUsecase changeIsPasswordNoteUsecase;
+  final AddCheckIntroUsecase addCheckIntroUsecase;
+  final GetCheckIntroUsecase getCheckIntroUsecase;
 
   NotesBloc(
       {required this.getAllNotesUsecase,
@@ -39,7 +43,9 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
       required this.getPasswordNoteUsecase,
       required this.newPasswordNoteUsecase,
       required this.changePasswordNoteUsecase,
-      required this.changeIsPasswordNoteUsecase})
+      required this.changeIsPasswordNoteUsecase,
+      required this.addCheckIntroUsecase,
+      required this.getCheckIntroUsecase})
       : super(const NotesState()) {
     on<InitStateEvent>(_onInitStateEvent);
     on<GetAllNotesEvent>(_onGetAllNotesEvent);
@@ -52,6 +58,8 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
     on<ChangePasswordNoteEvent>(_onChangePasswordNoteEvent);
     on<ChangeIsPasswordNoteEvent>(_onChangeIsPasswordNoteEvent);
     on<EnterPasswordNoteEvent>(_onEnterPasswordNoteEvent);
+    on<CheckIntroEvent>(_onCheckIntroEvent);
+    on<AddCheckIntroEvent>(_onAddCheckIntroEvent);
   }
 
   Future<void> _onInitStateEvent(
@@ -329,6 +337,52 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
     } catch (e) {
       emit(state.copyWith(
           status: NoteStatus.enterPasswordInCorrect,
+          notes: state.notes,
+          isPassword: state.isPassword));
+    }
+  }
+
+  Future<void> _onCheckIntroEvent(
+      CheckIntroEvent event, Emitter<NotesState> emit) async {
+    emit(state.copyWith(
+        status: NoteStatus.loading,
+        notes: state.notes,
+        isPassword: state.isPassword));
+
+    try {
+      var checkIntro = await getCheckIntroUsecase();
+      var isCheck = checkIntro.fold(((l) => null), (r) => r);
+
+      if (isCheck == '1') {
+        emit(state.copyWith(
+            status: NoteStatus.isCheckIntro, notes: state.notes));
+      } else {
+        emit(state.copyWith(
+            status: NoteStatus.isNotCheckIntro, notes: state.notes));
+      }
+    } catch (e) {
+      emit(state.copyWith(
+          status: NoteStatus.failure,
+          notes: state.notes,
+          isPassword: state.isPassword));
+    }
+  }
+
+  Future<void> _onAddCheckIntroEvent(
+      AddCheckIntroEvent event, Emitter<NotesState> emit) async {
+    emit(state.copyWith(
+        status: NoteStatus.loading,
+        notes: state.notes,
+        isPassword: state.isPassword));
+
+    try {
+      await addCheckIntroUsecase();
+
+      emit(state.copyWith(
+          status: NoteStatus.addCheckIntroSuccess, notes: state.notes));
+    } catch (e) {
+      emit(state.copyWith(
+          status: NoteStatus.addCheckIntroFailure,
           notes: state.notes,
           isPassword: state.isPassword));
     }

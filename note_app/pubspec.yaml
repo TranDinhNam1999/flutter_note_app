@@ -44,7 +44,7 @@ dependencies:
   http: ^0.13.5
   sizer: ^2.0.15
   lottie: ^2.0.0
-  google_fonts: ^3.0.1
+  google_fonts: ^4.0.1
   auto_size_text: ^3.0.0
   dartz: ^0.10.1
   uuid: ^3.0.7

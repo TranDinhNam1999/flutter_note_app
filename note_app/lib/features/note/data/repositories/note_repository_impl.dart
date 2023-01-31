@@ -99,4 +99,15 @@ class NotesRepositoryImpl implements NotesRepository {
     return await _getMessage(
         () => localDateSource.changeIsPasswordNote(uuid, isPassword));
   }
+
+  @override
+  Future<Either<Failure, Unit>> addCheckIntro() async {
+    return await _getMessage(() => localDateSource.cacheIntro('1'));
+  }
+
+  @override
+  Future<Either<Failure, String>> getCheckIntro() async {
+    final checkIntro = await localDateSource.getIntro();
+    return Right(checkIntro);
+  }
 }

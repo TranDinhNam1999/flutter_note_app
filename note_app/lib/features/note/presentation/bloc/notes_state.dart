@@ -16,7 +16,11 @@ enum NoteStatus {
   changePasswordInCorrectConfirm,
   enterPasswordIsCorrect,
   enterPasswordInCorrect,
-  passwordIsNoTConfigured
+  passwordIsNoTConfigured,
+  isCheckIntro,
+  isNotCheckIntro,
+  addCheckIntroSuccess,
+  addCheckIntroFailure
 }
 
 class NotesState extends Equatable {
